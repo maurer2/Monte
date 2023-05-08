@@ -1,22 +1,32 @@
-name: Deploy pages
+defaults:
+  run:
+    working-directory: slides
+
+name: Build slides and deploy to gh-pages branch
 on: push
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: main
       - uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: "16"
       - name: Install dependencies
         run: npm install
       - name: Install slidev
-        run:  npm i -g @slidev/cli
+        run: npm i -g @slidev/cli
+      - name: Create dist folder
+        run: |
+          mkdir ../dist
       - name: Build
-        run: slidev build --base monte
+        run: slidev build --base /monte
       - name: Deploy pages
-        uses: crazy-max/ghaction-github-pages@v2
+        uses: crazy-max/ghaction-github-pages@v3
         with:
-          build_dir: dist
+          build_dir: slides/dist
+          jekyll: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
