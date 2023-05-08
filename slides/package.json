@@ -4,14 +4,14 @@
   "scripts": {
     "build": "slidev build",
     "dev": "slidev --open",
-    "export": "slidev export"
+    "export": "slidev export --output slides",
+    "act:test": "act .github/workflows/test.yml -j build -w",
+    "act:deploy": "act --secret-file .env -W .github/workflows/deploy.yml -j build -w"
   },
   "dependencies": {
     "@slidev/cli": "^0.40.16",
     "@slidev/theme-default": "*",
-    "@slidev/theme-seriph": "*"
-  },
-  "devDependencies": {
+    "@slidev/theme-seriph": "*",
     "playwright-chromium": "^1.33.0"
   }
 }
