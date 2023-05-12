@@ -124,5 +124,20 @@ describe('schema', () => {
         expect(error.middleName?._errors).toContain('middleName mustn\'t be a palindrome')
       }
     });
+
+    it('should fail parsing when middleName is a palindrome that contains complex emojis', () => {
+      const schemaValue: Schema = {
+        firstName: faker.person.firstName(),
+        lastName: faker.person.lastName(),
+        middleName: '🐈‍⬛wow🐈‍⬛' // each emoji contains 4 characters
+      }
+      expect(schema.safeParse(schemaValue).success).toBeFalsy();
+
+      const result = schema.safeParse(schemaValue);
+      if (!result.success) {
+        const error = result.error.format();
+        expect(error.middleName?._errors).toContain('middleName mustn\'t be a palindrome')
+      }
+    });
   })
 });

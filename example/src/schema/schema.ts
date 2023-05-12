@@ -1,5 +1,10 @@
 import { z } from 'zod';
 
+// not available in Firefox
+const stringSplitter = new Intl.Segmenter('en', {
+  granularity: 'grapheme'
+});
+
 export const schema = z
   .object({
     // todo: tiles enum
@@ -32,12 +37,12 @@ export const schema = z
       })
       .trim()
       .min(1,'middleName mustn\'t be empty')
-      .transform((value: string): string => value
-        .toLocaleLowerCase()
-        .replace(/\s/g, "") // trim inside
-      )
+      .transform((value: string): string => value.replace(/\s/g, '')) // trim inside
       .refine(
-        (value: string): boolean => value.split('').reverse().join('') !== value,
+        (value: string): boolean => {
+          const stringAsArray: string[] = Array.from(stringSplitter.segment(value), ({ segment }) => segment);
+          return stringAsArray.reverse().join('') !== value;
+        },
         {
           message: `middleName mustn't be a palindrome`,
         },
