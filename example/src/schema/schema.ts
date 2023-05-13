@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { titles } from './schema.constants';
+
 // not available in Firefox
 const stringSplitter = new Intl.Segmenter('en', {
   granularity: 'grapheme'
@@ -7,7 +9,13 @@ const stringSplitter = new Intl.Segmenter('en', {
 
 export const schema = z
   .object({
-    // todo: tiles enum
+    // title
+    title: z
+      .enum(titles, {
+        required_error: 'title must be set',
+        invalid_type_error: 'title must be a string',
+      })
+    ,
 
     // firstName
     firstName: z
@@ -51,5 +59,3 @@ export const schema = z
     ,
   })
   .strict();
-
-export type Schema = z.infer<typeof schema>;
