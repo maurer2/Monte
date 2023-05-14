@@ -57,5 +57,53 @@ export const schema = z
       )
       .optional()
     ,
+
+    // hasCats - enables or disables numberOfCats
+    hasCats: z
+      .boolean({
+        invalid_type_error: 'hasCats must be a boolean',
+      })
+      .default(false)
+    ,
+
+    // numberOfCats - optional (depends on hasCats) and is coerced to number
+    numberOfCats: z
+      .coerce
+      .number({
+        invalid_type_error: 'numberOfCats must be number-ish',
+      })
+      .int('numberOfCats must be an integer')
+      .min(1, 'numberOfCats must be more than 0')
+      .max(50, 'numberOfCats must be less than or equal 50')
+      .optional()
+    ,
   })
-  .strict();
+  .strict()
+
+  // numberOfCats shouldn't be set if hasCats is false
+  .refine(
+    (schemaValues): boolean => {
+      if (!schemaValues.hasCats && typeof schemaValues?.numberOfCats !== 'undefined') {
+        return false;
+      }
+      return true;
+    },
+    {
+      message: `numberOfCats mustn't be set if hasCats is false`,
+      path: ['numberOfCats'],
+    },
+  )
+
+  // numberOfCats should be set if hasCats is true
+  .refine(
+    (schemaValues): boolean => {
+      if (schemaValues.hasCats && typeof schemaValues?.numberOfCats === 'undefined') {
+        return false;
+      }
+      return true;
+    },
+    {
+      message: `numberOfCats must be set if hasCats is true`,
+      path: ['numberOfCats'],
+    },
+  );
