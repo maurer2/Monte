@@ -274,7 +274,7 @@ describe('schema', () => {
 
   describe('numberOfCats', () => {
     it('should parse successfully when numberOfCats is already a number', () => {
-      const schemaValue = {
+      const schemaValue: Schema = {
         title: 'Mr.',
         firstName: faker.person.firstName(),
         lastName: faker.person.lastName(),
@@ -313,8 +313,82 @@ describe('schema', () => {
         const error = result.error.format();
         expect(error.numberOfCats?._errors).toContain('numberOfCats must be number-ish')
       }
-    });
+    })
 
+    it('should fail parsing when numberOfCats isn\'t an int', () => {
+      const schemaValue: Schema = {
+        title: 'Mr.',
+        firstName: faker.person.firstName(),
+        lastName: faker.person.lastName(),
+        middleName: 'Charles',
+        hasCats: true,
+        numberOfCats: faker.number.float(),
+      }
+      expect(schema.safeParse(schemaValue).success).toBeFalsy();
+
+      const result = schema.safeParse(schemaValue);
+      if (!result.success) {
+        const error = result.error.format();
+        expect(error.numberOfCats?._errors).toContain('numberOfCats must be an integer')
+      }
+    })
+
+    it('should parse successfully when numberOfCats is between 1 and 50', () => {
+      const schemaValue: Schema = {
+        title: 'Mr.',
+        firstName: faker.person.firstName(),
+        lastName: faker.person.lastName(),
+        middleName: 'Charles',
+        hasCats: true,
+        numberOfCats: 1,
+      };
+
+      Array.from(Array(50).keys()).forEach((testValue) => {
+        expect(schema.safeParse({
+          ...schemaValue,
+          numberOfCats: testValue + 1,
+        }).success).toBeTruthy();
+      });
+    })
+
+    it('should fail parsing when numberOfCats is less than 1', () => {
+      const schemaValue: Schema = {
+        title: 'Mr.',
+        firstName: faker.person.firstName(),
+        lastName: faker.person.lastName(),
+        middleName: 'Charles',
+        hasCats: true,
+        numberOfCats: 0,
+      }
+      expect(schema.safeParse(schemaValue).success).toBeFalsy();
+
+      const result = schema.safeParse(schemaValue);
+      if (!result.success) {
+        const error = result.error.format();
+        expect(error.numberOfCats?._errors).toContain('numberOfCats must be more than 0')
+      }
+    })
+
+    it('should fail parsing when numberOfCats is larger than 50', () => {
+      const schemaValue: Schema = {
+        title: 'Mr.',
+        firstName: faker.person.firstName(),
+        lastName: faker.person.lastName(),
+        middleName: 'Charles',
+        hasCats: true,
+        numberOfCats: 51,
+      }
+      expect(schema.safeParse(schemaValue).success).toBeFalsy();
+
+      const result = schema.safeParse(schemaValue);
+      if (!result.success) {
+        const error = result.error.format();
+        expect(error.numberOfCats?._errors).toContain('numberOfCats must be less than or equal 50')
+      }
+    })
+  })
+
+  describe('hasCats & numberOfCats', () => {
     it('should fail parsing when numberOfCats is set but hasCats is false', () => {
       const schemaValue = {
         title: 'Mr.',
