@@ -58,7 +58,7 @@ export const schema = z
       .optional()
     ,
 
-    // hasCats - enables or disables numberOfCats
+    // hasCats - makes numberOfCats field available or unavailable
     hasCats: z
       .boolean({
         invalid_type_error: 'hasCats must be a boolean',
@@ -70,7 +70,7 @@ export const schema = z
     numberOfCats: z
       .coerce
       .number({
-        invalid_type_error: 'numberOfCats must be number-ish',
+        invalid_type_error: 'numberOfCats must be number-ish', // triggered if coercion fails
       })
       .int('numberOfCats must be an integer')
       .min(1, 'numberOfCats must be more than 0')
