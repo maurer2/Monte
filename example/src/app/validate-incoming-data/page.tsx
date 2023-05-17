@@ -6,6 +6,8 @@ import { fromZodError } from 'zod-validation-error';
 import { schema } from '../../schema/schema';
 import type { Schema } from '../../schema/schema.types';
 
+import BackButton from '@/components/BackButton';
+
 export default function ValidateIncomingData() {
   const [validData, setValidData] = useState<Schema | null>(null);
   const [invalidData, setInvalidData] = useState<unknown | null>(null);
@@ -67,6 +69,8 @@ export default function ValidateIncomingData() {
             </ul>
           )}
         </section>
+
+        <BackButton cssClass='mt-4'/>
       </div>
     </main>
   );

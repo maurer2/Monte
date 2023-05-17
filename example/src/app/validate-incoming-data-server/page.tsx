@@ -1,7 +1,8 @@
 'use client';
 
-import { fromZodError } from 'zod-validation-error';
 import Image from 'next/image';
+
+import BackButton from '@/components/BackButton';
 
 // import { schema } from '../../schema/schema';
 // import type { Schema } from '../../schema/schema.types';
@@ -13,6 +14,8 @@ export default function ValidateIncomingDataServer() {
         <h1 className="mb-4">Validate incoming data server</h1>
 
         <Image src="/under-construction.gif" alt="" className="" width={133} height={133} />
+
+        <BackButton cssClass='mt-4'/>
       </div>
     </main>
   );
