@@ -13,7 +13,7 @@ lineNumbers: false
 # some information about the slides, markdown enabled
 info: |
   Zod in frontend projects
-  Using types at runtime
+  Types at runtime
 # page transition
 transition: go-forward | go-backward
 # use UnoCSS
@@ -26,7 +26,7 @@ favicon: favicon.ico
 ---
 # Zod in frontend projects
 
-## Using types at runtime
+## Types at runtime
 
 ---
 src: ./pages/intro.md

@@ -1,4 +1,4 @@
 {
   "language": "en-GB",
-  "ignoreWords": ["zod"]
+  "ignoreWords": ["zod", "Zod"]
 }
