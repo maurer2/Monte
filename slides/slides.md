@@ -12,26 +12,30 @@ highlighter: shiki
 lineNumbers: false
 # some information about the slides, markdown enabled
 info: |
-  ## Slidev Starter Template
-  Presentation slides for developers.
-
-  Learn more at [Sli.dev](https://sli.dev)
-# persist drawings in exports and build
-drawings:
-  persist: false
+  Zod in frontend projects
+  Using types at runtime
 # page transition
-transition: slide-left
+transition: go-forward | go-backward
 # use UnoCSS
 css: unocss
+# favicon
+favicon: favicon.ico
+
+# Pages
+
+---
+# Zod in frontend projects
+
+## Using types at runtime
+
+---
+src: ./pages/intro.md
 ---
 
-<!-- # Welcome to Slidev -->
+---
+src: ./pages/features.md
+---
 
-<!-- Presentation slides for developers -->
-
-<img src="/images/type-safety-kit.jpg" alt="" class="block m-auto h-[50vh]">
-
-
-<!--
-The last comment block of each slide will be treated as slide notes. It will be visible and editable in Presenter Mode along with the slide. [Read more in the docs](https://sli.dev/guide/syntax.html#notes)
--->
+---
+src: ./pages/schema-examples.md
+---

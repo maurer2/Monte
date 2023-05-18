@@ -3,12 +3,14 @@ defaults:
     working-directory: slides
 
 name: Build slides and deploy to gh-pages branch
+
 on:
   push:
     branches:
       - master
     paths-ignore:
       - 'example/**'
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
