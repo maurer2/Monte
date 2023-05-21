@@ -14,11 +14,11 @@ const FORM_VALUES_ACTION_NAMES = {
   RESET: 'reset',
 } as const;
 
-type SetValueAction<K extends keyof Schema> = {
+type SetValueAction<T, K extends keyof T> = {
   type: typeof FORM_VALUES_ACTION_NAMES.SET_VALUE;
   payload: {
     key: K;
-    value: Schema[K];
+    value: T[K];
   };
 };
 
@@ -38,7 +38,7 @@ const initialFormState: Schema = {
 
 function formValuesReducer<K extends keyof Schema>(
   state: Schema,
-  action: SetValueAction<K> | ResetAction,
+  action: SetValueAction<Schema, K> | ResetAction,
 ) {
   const { type, payload } = action;
 
@@ -61,8 +61,8 @@ export default function ValidateFormData() {
   const [formValues, dispatchFormValues] = useReducer(formValuesReducer, initialFormState);
   console.log(formValues);
 
-  function dispatchFormValuesTyped<K extends keyof Schema>(value: SetValueAction<K> | ResetAction): void {
-    dispatchFormValues(value);
+  function dispatchFormValuesTyped<K extends keyof Schema>(payload: SetValueAction<Schema, K> | ResetAction): void {
+    dispatchFormValues(payload);
   }
 
   return (
