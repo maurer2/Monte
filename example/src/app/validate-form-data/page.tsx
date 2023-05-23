@@ -2,11 +2,11 @@
 
 import { useReducer } from 'react';
 import type { ChangeEvent } from 'react';
-import { Combobox } from '@headlessui/react';
+import { Listbox, Combobox } from '@headlessui/react';
 
 import BackButton from '@/components/BackButton';
 
-// import { schema } from '../../schema/schema';
+import { schema } from '../../schema/schema';
 import type { Schema } from '../../schema/schema.types';
 
 const FORM_VALUES_ACTION_NAMES = {
@@ -71,10 +71,12 @@ export default function ValidateFormData() {
         <h1 className="mb-4">Validate form data</h1>
 
         <form action="" onReset={() => null} onSubmit={() => null}>
-          <fieldset>
-            <legend>Fields</legend>
+          <fieldset className="grid grid-cols-[min-content_1fr] gap-x-4 gap-y-4 mb-4 items-center">
+            <legend className="col-span-2 mb-4">Fields</legend>
+
             {/* firstName */}
             <Combobox value={formValues.firstName}>
+              <Combobox.Label>firstName</Combobox.Label>
               <Combobox.Input
                 className="text-black"
                 onChange={(event: ChangeEvent<HTMLInputElement>): void => {
@@ -90,10 +92,34 @@ export default function ValidateFormData() {
                 displayValue={(value: Schema['firstName']) => value}
               />
             </Combobox>
+
+            {/* lastName */}
+            <Combobox value={formValues.lastName}>
+              <Combobox.Label>lastName</Combobox.Label>
+              <Combobox.Input
+                className="text-black"
+                onChange={(event: ChangeEvent<HTMLInputElement>): void => {
+                  dispatchFormValuesTyped({
+                    type: FORM_VALUES_ACTION_NAMES.SET_VALUE,
+                    payload: {
+                      key: 'lastName',
+                      value: event.target.value,
+                    },
+                  });
+                }}
+                displayValue={(value: Schema['lastName']) => value}
+              />
+            </Combobox>
           </fieldset>
-          <button type="reset">Reset</button>
-          {' '}
-          <button type="submit">Submit</button>
+
+          <div className="flex gap-4 mb-4">
+            <button type="reset" className="p-2 border border-white">
+              Reset
+            </button>
+            <button type="submit" className="p-2 border border-white">
+              Submit
+            </button>
+          </div>
         </form>
 
         <code>
