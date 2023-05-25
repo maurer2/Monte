@@ -1,68 +1,50 @@
 'use client';
 
-import { useReducer } from 'react';
-import type { ChangeEvent } from 'react';
+import type { ChangeEvent, FormEvent } from 'react';
 import { Listbox, Combobox } from '@headlessui/react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 import BackButton from '@/components/BackButton';
 
 import { schema } from '../../schema/schema';
 import type { Schema } from '../../schema/schema.types';
 
-const FORM_VALUES_ACTION_NAMES = {
-  SET_VALUE: 'setValue',
-  RESET: 'reset',
-} as const;
-
-type SetValueAction<T, K extends keyof T> = {
-  type: typeof FORM_VALUES_ACTION_NAMES.SET_VALUE;
-  payload: {
-    key: K;
-    value: T[K];
-  };
-};
-
-type ResetAction = {
-  type: typeof FORM_VALUES_ACTION_NAMES.RESET;
-  payload: null;
-};
-
 const initialFormState: Schema = {
   title: 'Mr.',
   firstName: '',
+  middleName: '',
   lastName: '',
   hasCats: false,
   // numberOfCats: 1,
-  // middleName: '',
 };
 
-function formValuesReducer<K extends keyof Schema>(
-  state: Schema,
-  action: SetValueAction<Schema, K> | ResetAction,
-) {
-  const { type, payload } = action;
-
-  switch (type) {
-    case FORM_VALUES_ACTION_NAMES.SET_VALUE:
-      const { key, value } = payload;
-
-      return {
-        ...state,
-        [key]: value,
-      };
-    case FORM_VALUES_ACTION_NAMES.RESET:
-      return initialFormState;
-    default:
-      return state;
-  }
-}
 
 export default function ValidateFormData() {
-  const [formValues, dispatchFormValues] = useReducer(formValuesReducer, initialFormState);
-  console.log(formValues);
+  const {
+    register,
+    handleSubmit,
+    formState: {
+      errors,
+    },
+    reset,
+    getValues
+  } = useForm<Schema>({
+    defaultValues: initialFormState,
+    mode: 'onChange',
+    resolver: zodResolver(schema),
+  });
 
-  function dispatchFormValuesTyped<K extends keyof Schema>(payload: SetValueAction<Schema, K> | ResetAction): void {
-    dispatchFormValues(payload);
+  function onSubmit(value: unknown): void {
+    console.log('submit', value);
+  }
+
+  function onError(error: unknown): void {
+    console.log('error', error);
+  }
+
+  function handleReset(): void {
+    reset();
   }
 
   return (
@@ -70,45 +52,41 @@ export default function ValidateFormData() {
       <div className="z-10 w-full max-w-5xl font-mono text-sm">
         <h1 className="mb-4">Validate form data</h1>
 
-        <form action="" onReset={() => null} onSubmit={() => null}>
+        <form onSubmit={handleSubmit(onSubmit, onError)} onReset={handleReset}>
           <fieldset className="grid grid-cols-[min-content_1fr] gap-x-4 gap-y-4 mb-4 items-center">
             <legend className="col-span-2 mb-4">Fields</legend>
 
             {/* firstName */}
-            <Combobox value={formValues.firstName}>
+            <Combobox value={() => getValues('firstName')}>
               <Combobox.Label>firstName</Combobox.Label>
               <Combobox.Input
+                {...register('firstName')}
+                displayValue={() => getValues('firstName')}
                 className="text-black"
-                onChange={(event: ChangeEvent<HTMLInputElement>): void => {
-                  dispatchFormValuesTyped({
-                    type: FORM_VALUES_ACTION_NAMES.SET_VALUE,
-                    payload: {
-                      key: 'firstName',
-                      value: event.target.value,
-                      // value: 5 // test type security
-                    },
-                  });
-                }}
-                displayValue={(value: Schema['firstName']) => value}
               />
+              {errors.firstName && <p className='col-start-2'>{errors.firstName.message}</p>}
             </Combobox>
 
             {/* lastName */}
-            <Combobox value={formValues.lastName}>
+            <Combobox value={() => getValues('lastName')}>
               <Combobox.Label>lastName</Combobox.Label>
               <Combobox.Input
+                {...register('lastName')}
+                displayValue={() => getValues('lastName')}
                 className="text-black"
-                onChange={(event: ChangeEvent<HTMLInputElement>): void => {
-                  dispatchFormValuesTyped({
-                    type: FORM_VALUES_ACTION_NAMES.SET_VALUE,
-                    payload: {
-                      key: 'lastName',
-                      value: event.target.value,
-                    },
-                  });
-                }}
-                displayValue={(value: Schema['lastName']) => value}
               />
+              {errors.lastName && <p className='col-start-2'>{errors.lastName.message}</p>}
+            </Combobox>
+
+            {/* middleName */}
+            <Combobox value={() => getValues('middleName')}>
+              <Combobox.Label>middleName (Palindrome)</Combobox.Label>
+              <Combobox.Input
+                {...register('middleName')}
+                displayValue={() => getValues('middleName') ?? ''}
+                className="text-black"
+              />
+              {errors.middleName && <p className='col-start-2'>{errors.middleName.message}</p>}
             </Combobox>
           </fieldset>
 
@@ -121,10 +99,6 @@ export default function ValidateFormData() {
             </button>
           </div>
         </form>
-
-        <code>
-          <pre>{JSON.stringify(formValues, undefined, 4)}</pre>
-        </code>
 
         <BackButton cssClass="mt-4" />
       </div>
