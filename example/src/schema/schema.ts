@@ -49,6 +49,12 @@ export const schema = z
       .refine(
         (value: string): boolean => {
           const stringAsArray: string[] = Array.from(stringSplitter.segment(value), ({ segment }) => segment);
+
+          // one letter words are palindromes
+          if (stringAsArray.length === 1) {
+            return false;
+          }
+
           return stringAsArray.reverse().join('') !== value;
         },
         {
