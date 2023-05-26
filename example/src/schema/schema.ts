@@ -50,9 +50,9 @@ export const schema = z
         (value: string): boolean => {
           const stringAsArray: string[] = Array.from(stringSplitter.segment(value), ({ segment }) => segment);
 
-          // one letter words are palindromes
+          // don't treat one letter words as palindromes
           if (stringAsArray.length === 1) {
-            return false;
+            return true;
           }
 
           return stringAsArray.reverse().join('') !== value;

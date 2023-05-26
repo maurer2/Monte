@@ -218,29 +218,23 @@ describe('schema', () => {
       }
     });
 
+    it('should not fail parsing when middleName is a single letter', () => {
+      const schemaValue: Schema = {
+        title: 'Mr.',
+        firstName: faker.person.firstName(),
+        lastName: faker.person.lastName(),
+        middleName: 'a',
+        hasCats: false,
+      }
+      expect(schema.safeParse(schemaValue).success).toBeTruthy();
+    });
+
     it('should fail parsing when middleName is a palindrome', () => {
       const schemaValue: Schema = {
         title: 'Mr.',
         firstName: faker.person.firstName(),
         lastName: faker.person.lastName(),
         middleName: 'taco cat',
-        hasCats: false,
-      }
-      expect(schema.safeParse(schemaValue).success).toBeFalsy();
-
-      const result = schema.safeParse(schemaValue);
-      if (!result.success) {
-        const error = result.error.format();
-        expect(error.middleName?._errors).toContain('middleName mustn\'t be a palindrome')
-      }
-    });
-
-    it('should fail parsing when middleName is a single letter palindrome', () => {
-      const schemaValue: Schema = {
-        title: 'Mr.',
-        firstName: faker.person.firstName(),
-        lastName: faker.person.lastName(),
-        middleName: 'a',
         hasCats: false,
       }
       expect(schema.safeParse(schemaValue).success).toBeFalsy();
