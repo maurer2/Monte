@@ -8,6 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import BackButton from '@/components/BackButton';
 
 import { schema } from '../../schema/schema';
+import { titles } from '../../schema/schema.constants';
 import type { Schema } from '../../schema/schema.types';
 
 const initialFormState: Schema = {
@@ -23,14 +24,11 @@ export default function ValidateFormData() {
   const {
     register,
     handleSubmit,
-    formState: {
-      errors,
-      isValid,
-      isDirty
-    },
+    formState: { errors, isValid, isDirty },
     reset,
     getValues,
-    setValue
+    setValue,
+    watch,
   } = useForm<Schema>({
     defaultValues: initialFormState,
     mode: 'onChange',
@@ -59,6 +57,30 @@ export default function ValidateFormData() {
           <fieldset className="grid grid-cols-[max-content_1fr] gap-x-4 gap-y-4 mb-4 items-center">
             <legend className="col-span-2 mb-4">Fields</legend>
 
+            {/* title */}
+            <Listbox
+              {...register('firstName')}
+              value={getValues('title')}
+              onChange={(value) => setValue('title', value)}
+              as="div"
+              className="contents"
+              defaultValue={initialFormState.title}
+            >
+              <Listbox.Label>Title</Listbox.Label>
+              <div className="relative text-left">
+                <Listbox.Button className="p-2 block w-full text-left bg-white text-black">
+                  {({ value }) => value}
+                </Listbox.Button>
+                <Listbox.Options className="absolute w-full border-t border-black bg-white text-black">
+                  {titles.map((title) => (
+                    <Listbox.Option key={title} value={title} className="p-2 cursor-pointer">
+                      {title}
+                    </Listbox.Option>
+                  ))}
+                </Listbox.Options>
+              </div>
+            </Listbox>
+
             {/* firstName */}
             <Combobox value={() => getValues('firstName')}>
               <Combobox.Label>First name</Combobox.Label>
@@ -67,7 +89,7 @@ export default function ValidateFormData() {
                 displayValue={() => getValues('firstName')}
                 className="text-black"
               />
-              {errors.firstName && <p className='col-start-2'>{errors.firstName.message}</p>}
+              {errors.firstName && <p className="col-start-2">{errors.firstName.message}</p>}
             </Combobox>
 
             {/* lastName */}
@@ -78,7 +100,7 @@ export default function ValidateFormData() {
                 displayValue={() => getValues('lastName')}
                 className="text-black"
               />
-              {errors.lastName && <p className='col-start-2'>{errors.lastName.message}</p>}
+              {errors.lastName && <p className="col-start-2">{errors.lastName.message}</p>}
             </Combobox>
 
             {/* middleName */}
@@ -91,19 +113,15 @@ export default function ValidateFormData() {
                 // overrides onChange returned by register()
                 onChange={(event: ChangeEvent<HTMLInputElement>) => {
                   const inputValue = event.target.value;
-                  const newValue = (inputValue !== '')
-                    ? inputValue
-                    : undefined
+                  const newValue = inputValue !== '' ? inputValue : undefined;
                   setValue('middleName', newValue);
                 }}
               />
-              {errors.middleName && <p className='col-start-2'>{errors.middleName.message}</p>}
+              {errors.middleName && <p className="col-start-2">{errors.middleName.message}</p>}
             </Combobox>
           </fieldset>
 
-          {isDirty && !isValid && (
-            <p className='mb-4'>Form contains errors.</p>
-          )}
+          {isDirty && !isValid && <p className="mb-4">Form contains errors.</p>}
 
           <div className="flex gap-4 mb-4">
             <button type="reset" className="p-2 border border-white">
@@ -114,6 +132,10 @@ export default function ValidateFormData() {
             </button>
           </div>
         </form>
+
+        <pre>
+          <code>{JSON.stringify(watch(), undefined, 4)}</code>
+        </pre>
 
         <BackButton cssClass="mt-4" />
       </div>
