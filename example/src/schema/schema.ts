@@ -39,29 +39,37 @@ export const schema = z
 
     // middleName - optional, if set then it mustn't be empty and it mustn't be a palindrome
     middleName: z
-      .string({
-        invalid_type_error: 'middleName must be a string',
-        required_error: 'middleName must be set',
-      })
-      .trim()
-      .min(1,'middleName mustn\'t be empty')
-      .transform((value: string): string => value.replace(/\s/g, '')) // trim inside
-      .refine(
-        (value: string): boolean => {
-          const stringAsArray: string[] = Array.from(stringSplitter.segment(value), ({ segment }) => segment);
+      // https://stackoverflow.com/questions/73715295/react-hook-form-with-zod-resolver-optional-field
+      // todo: allows wrong datatype and empty string
+      .preprocess(
+        (value) => {
+          if (!value || typeof value !== 'string') return undefined
+          return value === '' ? undefined : value
+        }, z
+        .string({
+          invalid_type_error: 'middleName must be a string',
+          required_error: 'middleName must be set',
+        })
+        .trim()
+        .min(1,'middleName mustn\'t be empty')
+        .transform((value: string): string => value.replace(/\s/g, '')) // trim inside
+        .refine(
+          (value: string): boolean => {
+            const stringAsArray: string[] = Array.from(stringSplitter.segment(value), ({ segment }) => segment);
 
-          // don't treat one letter words as palindromes
-          if (stringAsArray.length === 1) {
-            return true;
-          }
+            // don't treat one letter words as palindromes
+            if (stringAsArray.length === 1) {
+              return true;
+            }
 
-          return stringAsArray.reverse().join('') !== value;
-        },
-        {
-          message: `middleName mustn't be a palindrome`,
-        },
+            return stringAsArray.reverse().join('') !== value;
+          },
+          {
+            message: `middleName mustn't be a palindrome`,
+          },
+        )
+        .optional()
       )
-      .optional()
     ,
 
     // hasCats - makes numberOfCats field available or unavailable

@@ -13,12 +13,11 @@ import type { Schema } from '../../schema/schema.types';
 const initialFormState: Schema = {
   title: 'Mr.',
   firstName: '',
-  middleName: '',
+  middleName: undefined,
   lastName: '',
   hasCats: false,
   // numberOfCats: 1,
 };
-
 
 export default function ValidateFormData() {
   const {
@@ -26,9 +25,12 @@ export default function ValidateFormData() {
     handleSubmit,
     formState: {
       errors,
+      isValid,
+      isDirty
     },
     reset,
-    getValues
+    getValues,
+    setValue
   } = useForm<Schema>({
     defaultValues: initialFormState,
     mode: 'onChange',
@@ -43,7 +45,8 @@ export default function ValidateFormData() {
     console.log('error', error);
   }
 
-  function handleReset(): void {
+  function onReset(event: FormEvent<HTMLFormElement>): void {
+    event.preventDefault();
     reset();
   }
 
@@ -52,13 +55,13 @@ export default function ValidateFormData() {
       <div className="z-10 w-full max-w-5xl font-mono text-sm">
         <h1 className="mb-4">Validate form data</h1>
 
-        <form onSubmit={handleSubmit(onSubmit, onError)} onReset={handleReset}>
-          <fieldset className="grid grid-cols-[min-content_1fr] gap-x-4 gap-y-4 mb-4 items-center">
+        <form onSubmit={handleSubmit(onSubmit, onError)} onReset={onReset}>
+          <fieldset className="grid grid-cols-[max-content_1fr] gap-x-4 gap-y-4 mb-4 items-center">
             <legend className="col-span-2 mb-4">Fields</legend>
 
             {/* firstName */}
             <Combobox value={() => getValues('firstName')}>
-              <Combobox.Label>firstName</Combobox.Label>
+              <Combobox.Label>First name</Combobox.Label>
               <Combobox.Input
                 {...register('firstName')}
                 displayValue={() => getValues('firstName')}
@@ -69,7 +72,7 @@ export default function ValidateFormData() {
 
             {/* lastName */}
             <Combobox value={() => getValues('lastName')}>
-              <Combobox.Label>lastName</Combobox.Label>
+              <Combobox.Label>Last name</Combobox.Label>
               <Combobox.Input
                 {...register('lastName')}
                 displayValue={() => getValues('lastName')}
@@ -79,16 +82,28 @@ export default function ValidateFormData() {
             </Combobox>
 
             {/* middleName */}
-            <Combobox value={() => getValues('middleName')}>
-              <Combobox.Label>middleName (Palindrome)</Combobox.Label>
+            <Combobox value={() => getValues('middleName')} nullable>
+              <Combobox.Label>Middle name</Combobox.Label>
               <Combobox.Input
                 {...register('middleName')}
                 displayValue={() => getValues('middleName') ?? ''}
                 className="text-black"
+                // overrides onChange returned by register()
+                onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                  const inputValue = event.target.value;
+                  const newValue = (inputValue !== '')
+                    ? inputValue
+                    : undefined
+                  setValue('middleName', newValue);
+                }}
               />
               {errors.middleName && <p className='col-start-2'>{errors.middleName.message}</p>}
             </Combobox>
           </fieldset>
+
+          {isDirty && !isValid && (
+            <p className='mb-4'>Form contains errors.</p>
+          )}
 
           <div className="flex gap-4 mb-4">
             <button type="reset" className="p-2 border border-white">
