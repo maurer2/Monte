@@ -1,9 +1,10 @@
 'use client';
 
 import type { ChangeEvent, FormEvent } from 'react';
-import { Listbox, Combobox } from '@headlessui/react';
+import { Listbox, Combobox, Switch } from '@headlessui/react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import clsx from 'clsx';
 
 import BackButton from '@/components/BackButton';
 
@@ -29,9 +30,9 @@ export default function ValidateFormData() {
     getValues,
     setValue,
     watch,
+    trigger,
   } = useForm<Schema>({
     defaultValues: initialFormState,
-    mode: 'onChange',
     resolver: zodResolver(schema),
   });
 
@@ -64,7 +65,6 @@ export default function ValidateFormData() {
               onChange={(value) => setValue('title', value)}
               as="div"
               className="contents"
-              defaultValue={initialFormState.title}
             >
               <Listbox.Label>Title</Listbox.Label>
               <div className="relative text-left">
@@ -115,10 +115,27 @@ export default function ValidateFormData() {
                   const inputValue = event.target.value;
                   const newValue = inputValue !== '' ? inputValue : undefined;
                   setValue('middleName', newValue);
+                  trigger('middleName');
                 }}
               />
               {errors.middleName && <p className="col-start-2">{errors.middleName.message}</p>}
             </Combobox>
+
+            {/* has cats */}
+            <Switch.Group>
+              <Switch.Label>Has cats</Switch.Label>
+              <Switch
+                {...register('hasCats')}
+                checked={getValues('hasCats')}
+                onChange={(value) => setValue('hasCats', value)}
+                className={clsx('w-4 h-4 flex items-center border', {
+                  'bg-black border-white': getValues('hasCats'),
+                  'bg-white border-black ': !getValues('hasCats'),
+                })}
+              >
+                <span className="ml-8">{getValues('hasCats') ? 'Yes' : 'No'}</span>
+              </Switch>
+            </Switch.Group>
           </fieldset>
 
           {isDirty && !isValid && <p className="mb-4">Form contains errors.</p>}
