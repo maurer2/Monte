@@ -1,5 +1,6 @@
 'use client';
 
+import {useEffect} from 'react'
 import type { ChangeEvent, FormEvent } from 'react';
 import { Listbox, Combobox, Switch } from '@headlessui/react';
 import { useForm } from 'react-hook-form';
@@ -18,7 +19,7 @@ const initialFormState: Schema = {
   middleName: undefined,
   lastName: '',
   hasCats: false,
-  // numberOfCats: 1,
+  numberOfCats: undefined,
 };
 
 export default function ValidateFormData() {
@@ -35,6 +36,14 @@ export default function ValidateFormData() {
     defaultValues: initialFormState,
     resolver: zodResolver(schema),
   });
+
+  const hasCats = watch('hasCats');
+
+  // trigger numberOfCats validation, when has cats is toggled
+  useEffect(() => {
+    trigger('numberOfCats');
+  }, [hasCats, trigger]);
+
 
   function onSubmit(value: unknown): void {
     console.log('submit', value);
@@ -110,12 +119,10 @@ export default function ValidateFormData() {
                 {...register('middleName')}
                 displayValue={() => getValues('middleName') ?? ''}
                 className="text-black"
-                // overrides onChange returned by register()
                 onChange={(event: ChangeEvent<HTMLInputElement>) => {
                   const inputValue = event.target.value;
                   const newValue = inputValue !== '' ? inputValue : undefined;
                   setValue('middleName', newValue);
-                  trigger('middleName');
                 }}
               />
               {errors.middleName && <p className="col-start-2">{errors.middleName.message}</p>}
@@ -126,16 +133,32 @@ export default function ValidateFormData() {
               <Switch.Label>Has cats</Switch.Label>
               <Switch
                 {...register('hasCats')}
-                checked={getValues('hasCats')}
+                checked={hasCats}
                 onChange={(value) => setValue('hasCats', value)}
                 className={clsx('w-4 h-4 flex items-center border', {
-                  'bg-black border-white': getValues('hasCats'),
-                  'bg-white border-black ': !getValues('hasCats'),
+                  'bg-black border-white': hasCats,
+                  'bg-white border-black ': !hasCats,
                 })}
               >
-                <span className="ml-8">{getValues('hasCats') ? 'Yes' : 'No'}</span>
+                <span className="ml-8">{hasCats ? 'Yes' : 'No'}</span>
               </Switch>
             </Switch.Group>
+
+            {/* numberOfCats */}
+            <Combobox value={() => getValues('numberOfCats')}>
+              <Combobox.Label>Number of cats</Combobox.Label>
+              <Combobox.Input
+                {...register('numberOfCats')}
+                onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                  const inputValue = event.target.value;
+                  const newValue = inputValue !== '' ? parseInt(inputValue, 10) : undefined;
+                  setValue('numberOfCats', newValue);
+                }}
+                displayValue={() => String(getValues('numberOfCats')) ?? ''}
+                className="text-black"
+              />
+              {errors.numberOfCats && <p className="col-start-2">{errors.numberOfCats.message}</p>}
+            </Combobox>
           </fieldset>
 
           {isDirty && !isValid && <p className="mb-4">Form contains errors.</p>}
