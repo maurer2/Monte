@@ -1,6 +1,6 @@
 'use client';
 
-import {useEffect} from 'react'
+import { useEffect } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import { Listbox, Combobox, Switch } from '@headlessui/react';
 import { useForm } from 'react-hook-form';
@@ -11,10 +11,10 @@ import BackButton from '@/components/BackButton';
 
 import { schema } from '../../schema/schema';
 import { titles } from '../../schema/schema.constants';
-import type { Schema } from '../../schema/schema.types';
+import type { Schema, SchemaWithEmptyValues } from '../../schema/schema.types';
 
-const initialFormState: Schema = {
-  title: 'Mr.',
+const initialFormState: SchemaWithEmptyValues = {
+  title: '-',
   firstName: '',
   middleName: undefined,
   lastName: '',
@@ -32,7 +32,7 @@ export default function ValidateFormData() {
     setValue,
     watch,
     trigger,
-  } = useForm<Schema>({
+  } = useForm<SchemaWithEmptyValues>({
     defaultValues: initialFormState,
     resolver: zodResolver(schema),
   });
@@ -71,7 +71,10 @@ export default function ValidateFormData() {
             <Listbox
               {...register('firstName')}
               value={getValues('title')}
-              onChange={(value) => setValue('title', value)}
+              onChange={(value) => {
+                setValue('title', value);
+                trigger('title');
+              }}
               as="div"
               className="contents"
             >
@@ -81,12 +84,18 @@ export default function ValidateFormData() {
                   {({ value }) => value}
                 </Listbox.Button>
                 <Listbox.Options className="absolute w-full border-t border-black bg-white text-black">
-                  {titles.map((title) => (
-                    <Listbox.Option key={title} value={title} className="p-2 cursor-pointer">
-                      {title}
+                  <>
+                    <Listbox.Option key="-" value="-" className="p-2 cursor-pointer">
+                      -
                     </Listbox.Option>
-                  ))}
+                    {titles.map((title) => (
+                      <Listbox.Option key={title} value={title} className="p-2 cursor-pointer">
+                        {title}
+                      </Listbox.Option>
+                    ))}
+                  </>
                 </Listbox.Options>
+                {errors.title && <p className="col-start-2 mt-4">{errors.title.message}</p>}
               </div>
             </Listbox>
 
