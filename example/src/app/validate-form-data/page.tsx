@@ -12,10 +12,10 @@ import { schema } from '../../schema/schema';
 import { titles } from '../../schema/schema.constants';
 import type { Schema, SchemaWithEmptyValues } from '../../schema/schema.types';
 
-//https://stackoverflow.com/questions/73582246/zod-schema-how-to-make-a-field-optional-or-have-a-minimum-string-contraint
+// https://stackoverflow.com/questions/73582246/zod-schema-how-to-make-a-field-optional-or-have-a-minimum-string-contraint
 
 const initialFormState: SchemaWithEmptyValues = {
-  title: '-',
+  title: '',
   firstName: '',
   middleName: undefined,
   lastName: '',
@@ -45,7 +45,6 @@ export default function ValidateFormData() {
     trigger('numberOfCats');
   }, [hasCats, trigger]);
 
-
   function onSubmit(value: unknown): void {
     console.log('submit', value);
   }
@@ -58,6 +57,8 @@ export default function ValidateFormData() {
     event.preventDefault();
     reset();
   }
+
+  console.log(errors);
 
   return (
     <main className="flex min-h-screen p-24">
@@ -75,20 +76,16 @@ export default function ValidateFormData() {
             <select
               {...register('title')}
               className='text-black'
-              // onChange={(value) => {
-              //   setValue('title', value);
-              //   trigger('title');
-              // }}
+              defaultValue='' // required to fixes flash of 'MR.' option
             >
               {/* default value */}
-              <option key="-" value="-">-</option>
-              {titles.map((title) => (
-                <option key={title} value={title}>
-                  {title}
+              {['', ...titles].map((title) => (
+                <option key={title} value={title} disabled={title === ''}>
+                  {title === '' ? 'Please select a title' : title}
                 </option>
               ))}
             </select>
-            {errors.title && <p className="col-start-2 mt-4">{errors.title.message}</p>}
+            {errors.title && <p className="col-start-2">{errors.title.message}</p>}
 
             {/* firstName */}
             <label htmlFor="firstName">First name</label>
