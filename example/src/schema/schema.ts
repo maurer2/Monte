@@ -39,22 +39,19 @@ export const schema = z
 
     // middleName - optional, if set then it mustn't be empty and it mustn't be a palindrome
     middleName: z
-      // https://stackoverflow.com/questions/73715295/react-hook-form-with-zod-resolver-optional-field
-      // todo: allows wrong datatype and empty string
-      .preprocess(
-        (value) => {
-          if (!value || typeof value !== 'string') return undefined
-          return value === '' ? undefined : value
-        }, z
-        .string({
+      .union([
+        z.string({
           invalid_type_error: 'middleName must be a string',
           required_error: 'middleName must be set',
         })
         .trim()
         .min(1,'middleName mustn\'t be empty')
-        .transform((value: string): string => value.replace(/\s/g, '')) // trim inside
+        // trim inside
+        .transform((value) => {
+          return value.replace(/\s/g, '');
+        })
         .refine(
-          (value: string): boolean => {
+          (value): boolean => {
             const stringAsArray: string[] = Array.from(stringSplitter.segment(value), ({ segment }) => segment);
 
             // don't treat one letter words as palindromes
@@ -67,9 +64,14 @@ export const schema = z
           {
             message: `middleName mustn't be a palindrome`,
           },
-        )
-        .optional()
-      )
+        ),
+        z.string().length(0)
+      ])
+      .optional()
+      // https://stackoverflow.com/questions/73582246/zod-schema-how-to-make-a-field-optional-or-have-a-minimum-string-contraint
+      // .transform((value) => value === '' ? undefined : value)
+      // https://stackoverflow.com/questions/73715295/react-hook-form-with-zod-resolver-optional-field
+      // .or(z.literal(''))
     ,
 
     // hasCats - makes numberOfCats field available or unavailable

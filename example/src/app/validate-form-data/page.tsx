@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import { useForm } from 'react-hook-form';
+import type { DefaultValues } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import clsx from 'clsx';
 
@@ -14,7 +15,7 @@ import type { Schema, SchemaWithEmptyValues } from '../../schema/schema.types';
 
 // https://stackoverflow.com/questions/73582246/zod-schema-how-to-make-a-field-optional-or-have-a-minimum-string-contraint
 
-const initialFormState: SchemaWithEmptyValues = {
+const initialFormState: DefaultValues<SchemaWithEmptyValues> = {
   title: '',
   firstName: '',
   middleName: undefined,
@@ -22,6 +23,7 @@ const initialFormState: SchemaWithEmptyValues = {
   hasCats: false,
   numberOfCats: undefined,
 };
+const titlesWithDefaultValue = ['', ...titles];
 
 export default function ValidateFormData() {
   const {
@@ -58,7 +60,8 @@ export default function ValidateFormData() {
     reset();
   }
 
-  console.log(errors);
+  // console.log(errors);
+  console.log(watch());
 
   return (
     <main className="flex min-h-screen p-24">
@@ -70,17 +73,14 @@ export default function ValidateFormData() {
             <legend className="col-span-2 mb-4">Fields</legend>
 
             {/* title */}
-            <label htmlFor="title">
-              Title
-            </label>
+            <label htmlFor="title">Title</label>
             <select
               {...register('title')}
               className='text-black'
               defaultValue='' // required to fixes flash of 'MR.' option
             >
-              {/* default value */}
-              {['', ...titles].map((title) => (
-                <option key={title} value={title} disabled={title === ''}>
+              {titlesWithDefaultValue.map((title, index) => (
+                <option key={title} value={title} disabled={index === 0}>
                   {title === '' ? 'Please select a title' : title}
                 </option>
               ))}
@@ -108,17 +108,12 @@ export default function ValidateFormData() {
             {errors.lastName && <p className="col-start-2">{errors.lastName.message}</p>}
 
             {/* middleName */}
-            <label htmlFor="middleName">Last name</label>
+            <label htmlFor="middleName">Middle name</label>
             <input
               {...register('middleName')}
               className='text-black'
               id="middleName"
               type="text"
-              // onChange={(event: ChangeEvent<HTMLInputElement>) => {
-              //   const inputValue = event.target.value;
-              //   const newValue = inputValue !== '' ? inputValue : undefined;
-              //   setValue('middleName', newValue);
-              // }}
             />
             {errors.middleName && <p className="col-start-2">{errors.middleName.message}</p>}
 
