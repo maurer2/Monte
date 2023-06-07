@@ -7,6 +7,7 @@ export type Schema = z.infer<typeof schema>;
 export type Titles = typeof titles[number];
 
 // Needed for empty select field -> empty fields won't validate successfully with regular Schema
-export type SchemaWithEmptyValues = Omit<Schema, 'title'> & {
-  title: Titles | '',
+export type SchemaWithEmptyValues = Omit<Schema, 'title' | 'numberOfCats'> & {
+  title: Titles,
+  numberOfCats: number | '',
 }

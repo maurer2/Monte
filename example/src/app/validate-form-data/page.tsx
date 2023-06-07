@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import type { DefaultValues } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import clsx from 'clsx';
@@ -15,8 +15,8 @@ import type { Schema, SchemaWithEmptyValues } from '../../schema/schema.types';
 
 // https://stackoverflow.com/questions/73582246/zod-schema-how-to-make-a-field-optional-or-have-a-minimum-string-contraint
 
-const initialFormState: DefaultValues<SchemaWithEmptyValues> = {
-  title: '',
+const initialFormState: DefaultValues<Schema> = {
+  title: undefined,
   firstName: '',
   middleName: undefined,
   lastName: '',
@@ -35,17 +35,18 @@ export default function ValidateFormData() {
     setValue,
     watch,
     trigger,
-  } = useForm<SchemaWithEmptyValues>({
+    control
+  } = useForm<Schema>({
     defaultValues: initialFormState,
     resolver: zodResolver(schema),
   });
 
   const hasCats = watch('hasCats');
 
-  // trigger numberOfCats validation, when has cats is toggled
-  useEffect(() => {
-    trigger('numberOfCats');
-  }, [hasCats, trigger]);
+  // trigger numberOfCats validation, when hasCats is toggled
+  // useEffect(() => {
+  //   trigger('numberOfCats');
+  // }, [hasCats, trigger]);
 
   function onSubmit(value: unknown): void {
     console.log('submit', value);
@@ -73,19 +74,42 @@ export default function ValidateFormData() {
             <legend className="col-span-2 mb-4">Fields</legend>
 
             {/* title */}
-            <label htmlFor="title">Title</label>
-            <select
-              {...register('title')}
-              className='text-black'
-              defaultValue='' // required to fixes flash of 'MR.' option
-            >
-              {titlesWithDefaultValue.map((title, index) => (
-                <option key={title} value={title} disabled={index === 0}>
-                  {title === '' ? 'Please select a title' : title}
-                </option>
-              ))}
-            </select>
-            {errors.title && <p className="col-start-2">{errors.title.message}</p>}
+            <Controller
+              control={control}
+              name="title"
+              render={({
+                field: { onChange, onBlur, value, name, ref },
+                fieldState: { invalid, isTouched, isDirty, error },
+                formState
+              }) => (
+                <>
+                  <label htmlFor="title">Title</label>
+                  <select
+                    className='text-black'
+                    id="title"
+                    name={name}
+                    onBlur={onBlur}
+                    onChange={(event: ChangeEvent<HTMLSelectElement>): void => {
+                      const newValue = event.target.value;
+
+                      if (newValue === '') {
+                        onChange(undefined);
+                        return;
+                      }
+                      onChange(newValue);
+                    }}
+                    value={value === undefined ? '' : value}
+                  >
+                  {titlesWithDefaultValue.map((title, index) => (
+                    <option key={title} value={title} disabled={index === 0}>
+                      {title === '' ? 'Please select a title' : title}
+                    </option>
+                  ))}
+                </select>
+                {error?.message && <p className="col-start-2">{error.message}</p>}
+                </>
+              )}
+            />
 
             {/* firstName */}
             <label htmlFor="firstName">First name</label>
@@ -117,7 +141,7 @@ export default function ValidateFormData() {
             />
             {errors.middleName && <p className="col-start-2">{errors.middleName.message}</p>}
 
-            {/* has cats */}
+            {/* hasCats */}
             <label htmlFor="hasCats">Has cats</label>
             <input
               {...register('hasCats')}
@@ -128,22 +152,17 @@ export default function ValidateFormData() {
             {errors.hasCats && <p className="col-start-2">{errors.hasCats.message}</p>}
 
             {/* numberOfCats */}
-            <label htmlFor="numberOfCats">Last name</label>
+            <label htmlFor="numberOfCats">Number of Cats</label>
             <input
               {...register('numberOfCats')}
               className='text-black'
               id="numberOfCats"
               type="text"
-              // onChange={(event: ChangeEvent<HTMLInputElement>) => {
-              //   const inputValue = event.target.value;
-              //   const newValue = inputValue !== '' ? parseInt(inputValue, 10) : undefined;
-              //   setValue('numberOfCats', newValue);
-              // }}
             />
             {errors.numberOfCats && <p className="col-start-2">{errors.numberOfCats.message}</p>}
           </fieldset>
 
-          {isDirty && !isValid && <p className="mb-4">Form contains errors.</p>}
+          {!isValid && <p className="mb-4">Form contains errors.</p>}
 
           <div className="flex gap-4 mb-4">
             <button type="reset" className="p-2 border border-white">
