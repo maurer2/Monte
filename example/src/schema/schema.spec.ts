@@ -185,7 +185,7 @@ describe('schema', () => {
       expect(schema.safeParse(schemaValue).success).toBeTruthy();
     });
 
-    it('should parse successfully when middleName is empty string -> treated as undefined', () => {
+    it('should fail parsing when middleName is empty', () => {
       const schemaValue: Schema = {
         title: 'Mr.',
         firstName: faker.person.firstName(),
@@ -193,7 +193,13 @@ describe('schema', () => {
         middleName: '',
         hasCats: false,
       }
-      expect(schema.safeParse(schemaValue).success).toBeTruthy();
+      expect(schema.safeParse(schemaValue).success).toBeFalsy();
+
+      const result = schema.safeParse(schemaValue);
+      if (!result.success) {
+        const error = result.error.format();
+        expect(error.middleName?._errors).toContain('middleName mustn\'t be empty')
+      }
     });
 
     it('should fail parsing when middleName is wrong data type', () => {

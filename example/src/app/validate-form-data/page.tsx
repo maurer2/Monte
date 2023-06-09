@@ -78,7 +78,7 @@ export default function ValidateFormData() {
               control={control}
               name="title"
               render={({
-                field: { onChange, onBlur, value, name, ref },
+                field: { onChange, onBlur, value, name },
                 fieldState: { invalid, isTouched, isDirty, error },
                 formState
               }) => (
@@ -86,27 +86,26 @@ export default function ValidateFormData() {
                   <label htmlFor="title">Title</label>
                   <select
                     className='text-black'
-                    id="title"
+                    id={name}
                     name={name}
                     onBlur={onBlur}
                     onChange={(event: ChangeEvent<HTMLSelectElement>): void => {
-                      const newValue = event.target.value;
+                      const currentValue: string = event.target.value;
+                      const nextValue = currentValue === ''
+                        ? undefined
+                        : currentValue;
 
-                      if (newValue === '') {
-                        onChange(undefined);
-                        return;
-                      }
-                      onChange(newValue);
+                      onChange(nextValue);
                     }}
                     value={value === undefined ? '' : value}
                   >
-                  {titlesWithDefaultValue.map((title, index) => (
-                    <option key={title} value={title} disabled={index === 0}>
-                      {title === '' ? 'Please select a title' : title}
-                    </option>
-                  ))}
-                </select>
-                {error?.message && <p className="col-start-2">{error.message}</p>}
+                    {titlesWithDefaultValue.map((title, index) => (
+                      <option key={title} value={title} disabled={index === 0}>
+                        {title === '' ? 'Please select a title' : title}
+                      </option>
+                    ))}
+                  </select>
+                  {error?.message && <p className="col-start-2">{error.message}</p>}
                 </>
               )}
             />
@@ -132,14 +131,35 @@ export default function ValidateFormData() {
             {errors.lastName && <p className="col-start-2">{errors.lastName.message}</p>}
 
             {/* middleName */}
-            <label htmlFor="middleName">Middle name</label>
-            <input
-              {...register('middleName')}
-              className='text-black'
-              id="middleName"
-              type="text"
+            <Controller
+              control={control}
+              name="middleName"
+              render={({
+                field: { onChange, onBlur, value, name },
+                fieldState: { invalid, isTouched, isDirty, error },
+                formState
+              }) => (
+                <>
+                  <label htmlFor="middleName">Middle name</label>
+                  <input
+                    className='text-black'
+                    id={name}
+                    name={name}
+                    onBlur={onBlur}
+                    onChange={(event: ChangeEvent<HTMLInputElement>): void => {
+                      const currentValue: string = event.target.value;
+                      const nextValue = currentValue === ''
+                        ? undefined
+                        : currentValue;
+
+                      onChange(nextValue);
+                    }}
+                    type="text"
+                  />
+                  {errors.middleName && <p className="col-start-2">{errors.middleName.message}</p>}
+                </>
+              )}
             />
-            {errors.middleName && <p className="col-start-2">{errors.middleName.message}</p>}
 
             {/* hasCats */}
             <label htmlFor="hasCats">Has cats</label>

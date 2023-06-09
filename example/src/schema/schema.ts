@@ -39,37 +39,32 @@ export const schema = z
 
     // middleName - optional, if set then it mustn't be empty and it mustn't be a palindrome
     middleName: z
-      .union([
-        z.string({
-          invalid_type_error: 'middleName must be a string',
-          required_error: 'middleName must be set',
-        })
-        .trim()
-        .min(1,'middleName mustn\'t be empty')
-        // trim inside
-        .transform((value) => {
-          return value.replace(/\s/g, '');
-        })
-        .refine(
-          (value): boolean => {
-            const stringAsArray: string[] = Array.from(stringSplitter.segment(value), ({ segment }) => segment);
+      .string({
+        invalid_type_error: 'middleName must be a string',
+        required_error: 'middleName must be set',
+      })
+      .trim()
+      .min(1,'middleName mustn\'t be empty')
+      // trim inside
+      .transform((value) =>  value.replace(/\s/g, ''))
+      .refine(
+        (value): boolean => {
+          const stringAsArray: string[] = Array.from(stringSplitter.segment(value), ({ segment }) => segment);
 
-            // don't treat one letter words as palindromes
-            if (stringAsArray.length === 1) {
-              return true;
-            }
+          // don't treat one letter words as palindromes
+          if (stringAsArray.length === 1) {
+            return true;
+          }
 
-            return stringAsArray.reverse().join('') !== value;
-          },
-          {
-            message: `middleName mustn't be a palindrome`,
-          },
-        ),
-        z.string().length(0)
-      ])
+          return stringAsArray.reverse().join('') !== value;
+        },
+        {
+          message: `middleName mustn't be a palindrome`,
+        },
+      )
       .optional()
       // https://stackoverflow.com/questions/73582246/zod-schema-how-to-make-a-field-optional-or-have-a-minimum-string-contraint
-      // .transform((value) => value === '' ? undefined : value)
+      .transform((value) => value === '' ? undefined : value)
       // https://stackoverflow.com/questions/73715295/react-hook-form-with-zod-resolver-optional-field
       // .or(z.literal(''))
     ,
