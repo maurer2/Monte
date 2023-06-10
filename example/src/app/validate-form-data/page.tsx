@@ -16,7 +16,7 @@ import type { Schema, SchemaWithEmptyValues } from '../../schema/schema.types';
 // https://stackoverflow.com/questions/73582246/zod-schema-how-to-make-a-field-optional-or-have-a-minimum-string-contraint
 
 const initialFormState: DefaultValues<Schema> = {
-  title: undefined,
+  title: null,
   firstName: '',
   middleName: undefined,
   lastName: '',
@@ -61,8 +61,8 @@ export default function ValidateFormData() {
     reset();
   }
 
-  // console.log(errors);
-  console.log(watch());
+  console.log(errors);
+  // console.log(watch());
 
   return (
     <main className="flex min-h-screen p-24">
@@ -78,9 +78,9 @@ export default function ValidateFormData() {
               control={control}
               name="title"
               render={({
-                field: { onChange, onBlur, value, name },
+                field: { onChange, onBlur, value, name, ref },
                 fieldState: { invalid, isTouched, isDirty, error },
-                formState
+                // formState
               }) => (
                 <>
                   <label htmlFor="title">Title</label>
@@ -92,12 +92,13 @@ export default function ValidateFormData() {
                     onChange={(event: ChangeEvent<HTMLSelectElement>): void => {
                       const currentValue: string = event.target.value;
                       const nextValue = currentValue === ''
-                        ? undefined
+                        ? null
                         : currentValue;
 
                       onChange(nextValue);
                     }}
-                    value={value === undefined ? '' : value}
+                    value={value === null ? '' : value}
+                    ref={ref}
                   >
                     {titlesWithDefaultValue.map((title, index) => (
                       <option key={title} value={title} disabled={index === 0}>
@@ -135,9 +136,9 @@ export default function ValidateFormData() {
               control={control}
               name="middleName"
               render={({
-                field: { onChange, onBlur, value, name },
+                field: { onChange, onBlur, name, ref },
                 fieldState: { invalid, isTouched, isDirty, error },
-                formState
+                // formState
               }) => (
                 <>
                   <label htmlFor="middleName">Middle name</label>
@@ -155,8 +156,9 @@ export default function ValidateFormData() {
                       onChange(nextValue);
                     }}
                     type="text"
+                    ref={ref}
                   />
-                  {errors.middleName && <p className="col-start-2">{errors.middleName.message}</p>}
+                  {error && <p className="col-start-2">{error.message}</p>}
                 </>
               )}
             />

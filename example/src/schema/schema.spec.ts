@@ -31,6 +31,22 @@ describe('schema', () => {
       }
     });
 
+    it('should fail parsing when title is null', () => {
+      const schemaValue = {
+        title: null,
+        firstName: faker.person.firstName(),
+        lastName: faker.person.lastName(),
+        middleName: 'Charles'
+      }
+      expect(schema.safeParse(schemaValue).success).toBeFalsy();
+
+      const result = schema.safeParse(schemaValue);
+      if (!result.success) {
+        const error = result.error.format();
+        expect(error.title?._errors).toContain('title must either be Mr., Ms., Mrs., Dr. or Prof.')
+      }
+    });
+
     it('should fail parsing when title is wrong data type', () => {
       const schemaValue = {
         title: faker.number.int(),

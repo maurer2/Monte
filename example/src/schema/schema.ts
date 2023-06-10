@@ -4,17 +4,26 @@ import { titles } from './schema.constants';
 
 // not available in Firefox
 const stringSplitter = new Intl.Segmenter('en', {
-  granularity: 'grapheme'
+  granularity: 'grapheme',
 });
+
+const stringEnumerationFormatter = new Intl.ListFormat('en-gb', { style: 'long', type: 'disjunction' });
 
 export const schema = z
   .object({
-    // title
+    // title - null is needed as default value for the non optional field and is refined as invalid later on
     title: z
       .enum(titles, {
         required_error: 'title must be set',
         invalid_type_error: 'title must be a string',
       })
+      .or(z.null())
+      .refine((
+        value): boolean => value !== null,
+        {
+          message: `title must either be ${stringEnumerationFormatter.format(titles)}`
+        }
+      )
     ,
 
     // firstName
