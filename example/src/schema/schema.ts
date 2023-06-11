@@ -1,4 +1,7 @@
-import { coerce, z } from 'zod';
+/* eslint-disable function-paren-newline */
+/* eslint-disable @typescript-eslint/indent */
+/* eslint-disable comma-style */
+import { z } from 'zod';
 
 import { titles } from './schema.constants';
 
@@ -11,7 +14,7 @@ const stringEnumerationFormatter = new Intl.ListFormat('en-gb', { style: 'long',
 
 export const schema = z
   .object({
-    // title - null is needed as default value for the non optional field and is refined as invalid later on
+    // #region title - null is needed as default value for the non optional field and is refined as invalid later on
     title: z
       .enum(titles, {
         required_error: 'title must be set',
@@ -21,10 +24,11 @@ export const schema = z
       .refine((
         value): boolean => value !== null,
         {
-          message: `title must either be ${stringEnumerationFormatter.format(titles)}`
-        }
+          message: `title must either be ${stringEnumerationFormatter.format(titles)}`,
+        },
       )
     ,
+    // #endregion
 
     // #region firstName
     firstName: z
@@ -56,12 +60,12 @@ export const schema = z
         required_error: 'middleName must be set',
       })
       .trim()
-      .min(1,'middleName mustn\'t be empty')
+      .min(1, 'middleName mustn\'t be empty')
       // trim inside
-      .transform((value) =>  value.replace(/\s/g, ''))
+      .transform((value) => value.replace(/\s/g, ''))
       .refine(
         (value): boolean => {
-          const stringAsArray: string[] = Array.from(stringSplitter.segment(value), ({ segment }) => segment);
+          const stringAsArray = Array.from(stringSplitter.segment(value), ({ segment }) => segment);
 
           // don't treat one letter words as palindromes
           if (stringAsArray.length === 1) {
@@ -71,12 +75,12 @@ export const schema = z
           return stringAsArray.reverse().join('') !== value;
         },
         {
-          message: `middleName mustn't be a palindrome`,
+          message: 'middleName mustn\'t be a palindrome',
         },
       )
       .optional()
       // https://stackoverflow.com/questions/73582246/zod-schema-how-to-make-a-field-optional-or-have-a-minimum-string-contraint
-      .transform((value) => value === '' ? undefined : value)
+      .transform((value) => (value === '' ? undefined : value))
       // https://stackoverflow.com/questions/73715295/react-hook-form-with-zod-resolver-optional-field
       // .or(z.literal(''))
     ,
@@ -107,10 +111,10 @@ export const schema = z
         z.coerce.number({
           invalid_type_error: 'numberOfCats must be number-ish', // triggered if coercion fails
         })
-        .int('numberOfCats must be an integer')
-        .min(1, 'numberOfCats must be more than 0')
-        .max(50, 'numberOfCats must be less than or equal 50')
-        .optional()
+          .int('numberOfCats must be an integer')
+          .min(1, 'numberOfCats must be more than 0')
+          .max(50, 'numberOfCats must be less than or equal 50')
+          .optional(),
       )
     ,
     // #endregion
@@ -126,7 +130,7 @@ export const schema = z
       return true;
     },
     {
-      message: `numberOfCats mustn't be set if hasCats is false`,
+      message: 'numberOfCats mustn\'t be set if hasCats is false',
       path: ['numberOfCats'],
     },
   )
@@ -141,7 +145,7 @@ export const schema = z
       return true;
     },
     {
-      message: `numberOfCats must be set if hasCats is true`,
+      message: 'numberOfCats must be set if hasCats is true',
       path: ['numberOfCats'],
     },
   );

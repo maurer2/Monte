@@ -1,12 +1,12 @@
-'use client'
+'use client';
 
 import { useRouter } from 'next/navigation';
 
 type BackButtonProps = {
   cssClass?: string;
-}
+};
 
-export default function BackButton({cssClass}: BackButtonProps) {
+export default function BackButton({ cssClass }: BackButtonProps) {
   const router = useRouter();
 
   return (

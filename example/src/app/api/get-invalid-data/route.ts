@@ -7,6 +7,6 @@ export async function GET(request: Request): Promise<NextResponse> {
     lastName: 'Stevens',
     hasCats: true,
     numberOfCats: 100,
-  }
+  };
   return NextResponse.json(payload);
 }

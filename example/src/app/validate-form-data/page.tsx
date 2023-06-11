@@ -5,14 +5,13 @@ import type { ChangeEvent, FormEvent } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import type { DefaultValues } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import clsx from 'clsx';
-import { DevTool } from '@hookform/devtools';
+// import { DevTool } from '@hookform/devtools';
 
 import BackButton from '@/components/BackButton';
 
 import { schema } from '../../schema/schema';
 import { titles } from '../../schema/schema.constants';
-import type { Schema, SchemaWithEmptyValues } from '../../schema/schema.types';
+import type { Schema } from '../../schema/schema.types';
 
 // https://stackoverflow.com/questions/73582246/zod-schema-how-to-make-a-field-optional-or-have-a-minimum-string-contraint
 
@@ -30,13 +29,12 @@ export default function ValidateFormData() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid, isDirty },
+    formState: { errors },
     reset,
     getValues,
-    setValue,
     watch,
     trigger,
-    control
+    control,
   } = useForm<Schema>({
     defaultValues: initialFormState,
     resolver: zodResolver(schema),
@@ -80,14 +78,18 @@ export default function ValidateFormData() {
               control={control}
               name="title"
               render={({
-                field: { onChange, onBlur, value, name, ref },
-                fieldState: { invalid, isTouched, isDirty, error },
+                field: {
+                  onChange, onBlur, value, name, ref,
+                },
+                fieldState: {
+                  error,
+                },
                 // formState
               }) => (
                 <>
                   <label htmlFor="title">Title</label>
                   <select
-                    className='text-black'
+                    className="text-black"
                     id={name}
                     name={name}
                     onBlur={onBlur}
@@ -117,7 +119,7 @@ export default function ValidateFormData() {
             <label htmlFor="firstName">First name</label>
             <input
               {...register('firstName')}
-              className='text-black'
+              className="text-black"
               id="firstName"
               type="text"
             />
@@ -127,7 +129,7 @@ export default function ValidateFormData() {
             <label htmlFor="lastName">Last name</label>
             <input
               {...register('lastName')}
-              className='text-black'
+              className="text-black"
               id="lastName"
               type="text"
             />
@@ -138,8 +140,12 @@ export default function ValidateFormData() {
               control={control}
               name="middleName"
               render={({
-                field: { onChange, onBlur, name, ref, value },
-                fieldState: { invalid, isTouched, isDirty, error },
+                field: {
+                  onChange, onBlur, name, ref, value,
+                },
+                fieldState: {
+                  error,
+                },
                 // formState
               }) => (
                 <>
@@ -159,7 +165,7 @@ export default function ValidateFormData() {
                     value={value === undefined ? '' : value}
                     ref={ref}
                     type="text"
-                    className='text-black'
+                    className="text-black"
                   />
                   {error && <p className="col-start-2">{error.message}</p>}
                 </>
@@ -170,7 +176,7 @@ export default function ValidateFormData() {
             <label htmlFor="hasCats">Has cats</label>
             <input
               {...register('hasCats')}
-              className='text-black'
+              className="text-black"
               id="hasCats"
               type="checkbox"
             />
@@ -181,8 +187,12 @@ export default function ValidateFormData() {
               control={control}
               name="numberOfCats"
               render={({
-                field: { onChange, onBlur, name, ref, value },
-                fieldState: { invalid, isTouched, isDirty, error },
+                field: {
+                  onChange, onBlur, name, ref, value,
+                },
+                fieldState: {
+                  error,
+                },
                 // formState
               }) => (
                 <>
@@ -202,7 +212,7 @@ export default function ValidateFormData() {
                     value={value === undefined ? '' : value}
                     ref={ref}
                     type="text"
-                    className='text-black'
+                    className="text-black"
                   />
                   {error && <p className="col-start-2">{error.message}</p>}
                 </>

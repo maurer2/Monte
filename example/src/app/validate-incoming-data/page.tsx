@@ -3,16 +3,16 @@
 import { useEffect, useState } from 'react';
 import { fromZodError } from 'zod-validation-error';
 
+import BackButton from '@/components/BackButton';
 import { schema } from '../../schema/schema';
 import type { Schema } from '../../schema/schema.types';
-
-import BackButton from '@/components/BackButton';
 
 export default function ValidateIncomingData() {
   const [validData, setValidData] = useState<Schema | null>(null);
   const [invalidData, setInvalidData] = useState<unknown | null>(null);
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/comma-dangle
     const fetchApiData = async <T,>(url: string): Promise<T> => {
       const data = await fetch(url);
       const json = await data.json();
@@ -47,7 +47,11 @@ export default function ValidateIncomingData() {
           <code>
             <pre>{JSON.stringify(validData, undefined, 4)}</pre>
           </code>
-          <p className="mb-4">Is valid: {String(schema.safeParse(validData).success)}</p>
+          <p className="mb-4">
+            Is valid:
+            {String(schema.safeParse(validData).success)}
+
+          </p>
         </section>
 
         <section>
@@ -55,7 +59,11 @@ export default function ValidateIncomingData() {
           <code>
             <pre>{JSON.stringify(invalidData, undefined, 4)}</pre>
           </code>
-          <p>Is valid: {String(schema.safeParse(invalidData).success)}</p>
+          <p>
+            Is valid:
+            {String(schema.safeParse(invalidData).success)}
+
+          </p>
           <p>Error:</p>
           {!errorData.success && (
             <ul>
@@ -70,7 +78,7 @@ export default function ValidateIncomingData() {
           )}
         </section>
 
-        <BackButton cssClass='mt-4'/>
+        <BackButton cssClass="mt-4" />
       </div>
     </main>
   );

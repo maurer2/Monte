@@ -1,13 +1,16 @@
-import React, { ComponentPropsWithoutRef } from 'react';
+import type { ComponentPropsWithoutRef } from 'react';
+import React from 'react';
 import { render, screen, cleanup } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it, vi, afterEach } from 'vitest';
+import {
+  describe, expect, it, vi, afterEach,
+} from 'vitest';
 import matchers from '@testing-library/jest-dom/matchers';
 import mockRouter from 'next-router-mock';
 
-expect.extend(matchers);
-
 import Component from '.';
+
+expect.extend(matchers);
 
 type Props = ComponentPropsWithoutRef<typeof Component>;
 
@@ -23,7 +26,7 @@ describe('BackButton', () => {
   });
 
   const setup = (props?: Props) => render(
-    <Component {...propsDefault} {...props} />
+    <Component {...propsDefault} {...props} />,
   );
 
   it('renders the component', () => {

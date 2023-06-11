@@ -15,7 +15,7 @@ export default function ValidateIncomingDataServer() {
 
         <Image src="/under-construction.gif" alt="" className="" width={133} height={133} />
 
-        <BackButton cssClass='mt-4'/>
+        <BackButton cssClass="mt-4" />
       </div>
     </main>
   );
