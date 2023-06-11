@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { coerce, z } from 'zod';
 
 import { titles } from './schema.constants';
 
@@ -26,7 +26,7 @@ export const schema = z
       )
     ,
 
-    // firstName
+    // #region firstName
     firstName: z
       .string({
         invalid_type_error: 'firstName must be a string',
@@ -35,8 +35,9 @@ export const schema = z
       .trim()
       .min(1, 'firstName mustn\'t be empty')
     ,
+    // #endregion
 
-    // lastName
+    // #region lastName
     lastName: z
       .string({
         invalid_type_error: 'lastName must be a string',
@@ -45,8 +46,10 @@ export const schema = z
       .trim()
       .min(1, 'lastName mustn\'t be empty')
     ,
+    // #endregion
 
-    // middleName - optional, if set then it mustn't be empty and it mustn't be a palindrome
+    // #region middleName
+    // optional - if set then it mustn't be empty and it mustn't be a palindrome
     middleName: z
       .string({
         invalid_type_error: 'middleName must be a string',
@@ -77,33 +80,47 @@ export const schema = z
       // https://stackoverflow.com/questions/73715295/react-hook-form-with-zod-resolver-optional-field
       // .or(z.literal(''))
     ,
+    // #endregion
 
-    // hasCats - makes numberOfCats field available or unavailable
+    // #region hasCats
+    // makes numberOfCats field available or unavailable
     hasCats: z
       .boolean({
         invalid_type_error: 'hasCats must be a boolean',
       })
       .default(false)
     ,
+    // #endregion
 
-    // numberOfCats - optional (depends on hasCats) and is coerced to number
+    // #region numberOfCats
+    // optional - depends on hasCats and is coerced to number
     numberOfCats: z
-      .coerce
-      .number({
-        invalid_type_error: 'numberOfCats must be number-ish', // triggered if coercion fails
-      })
-      .int('numberOfCats must be an integer')
-      .min(1, 'numberOfCats must be more than 0')
-      .max(50, 'numberOfCats must be less than or equal 50')
-      .optional()
+      .preprocess(
+        (input: unknown): unknown => {
+          // https://stackoverflow.com/questions/71052832/zod-set-min-max-after-transform-string-to-number
+          // treat empty field as undefined, but pass thru other falsy values
+          if (input === '') {
+            return undefined;
+          }
+          return input;
+        },
+        z.coerce.number({
+          invalid_type_error: 'numberOfCats must be number-ish', // triggered if coercion fails
+        })
+        .int('numberOfCats must be an integer')
+        .min(1, 'numberOfCats must be more than 0')
+        .max(50, 'numberOfCats must be less than or equal 50')
+        .optional()
+      )
     ,
+    // #endregion
   })
   .strict()
 
   // numberOfCats shouldn't be set if hasCats is false
   .refine(
-    (schemaValues): boolean => {
-      if (!schemaValues.hasCats && typeof schemaValues?.numberOfCats !== 'undefined') {
+    ({ hasCats, numberOfCats }): boolean => {
+      if (!hasCats && typeof numberOfCats !== 'undefined') {
         return false;
       }
       return true;
@@ -116,8 +133,9 @@ export const schema = z
 
   // numberOfCats should be set if hasCats is true
   .refine(
-    (schemaValues): boolean => {
-      if (schemaValues.hasCats && typeof schemaValues?.numberOfCats === 'undefined') {
+    ({ hasCats, numberOfCats }): boolean => {
+      // console.log(hasCats, numberOfCats)
+      if (hasCats && typeof numberOfCats === 'undefined') {
         return false;
       }
       return true;

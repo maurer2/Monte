@@ -6,6 +6,7 @@ import { useForm, Controller } from 'react-hook-form';
 import type { DefaultValues } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import clsx from 'clsx';
+import { DevTool } from '@hookform/devtools';
 
 import BackButton from '@/components/BackButton';
 
@@ -41,12 +42,11 @@ export default function ValidateFormData() {
     resolver: zodResolver(schema),
   });
 
-  const hasCats = watch('hasCats');
-
   // trigger numberOfCats validation, when hasCats is toggled
-  // useEffect(() => {
-  //   trigger('numberOfCats');
-  // }, [hasCats, trigger]);
+  useEffect(() => {
+    trigger('numberOfCats');
+    // todo only trigger when other errors are also shown
+  }, [watch('hasCats'), trigger]);
 
   function onSubmit(value: unknown): void {
     console.log('submit', value);
@@ -61,13 +61,15 @@ export default function ValidateFormData() {
     reset();
   }
 
-  console.log(errors);
-  // console.log(watch());
+  // console.log(errors);
+  console.log(watch());
 
   return (
     <main className="flex min-h-screen p-24">
       <div className="z-10 w-full max-w-5xl font-mono text-sm">
         <h1 className="mb-4">Validate form data</h1>
+
+        {/* <DevTool control={control} placement="top-right" /> */}
 
         <form onSubmit={handleSubmit(onSubmit, onError)} onReset={onReset}>
           <fieldset className="grid grid-cols-[max-content_1fr] gap-x-4 gap-y-4 mb-4 items-center">
@@ -136,14 +138,13 @@ export default function ValidateFormData() {
               control={control}
               name="middleName"
               render={({
-                field: { onChange, onBlur, name, ref },
+                field: { onChange, onBlur, name, ref, value },
                 fieldState: { invalid, isTouched, isDirty, error },
                 // formState
               }) => (
                 <>
                   <label htmlFor="middleName">Middle name</label>
                   <input
-                    className='text-black'
                     id={name}
                     name={name}
                     onBlur={onBlur}
@@ -155,8 +156,10 @@ export default function ValidateFormData() {
 
                       onChange(nextValue);
                     }}
-                    type="text"
+                    value={value === undefined ? '' : value}
                     ref={ref}
+                    type="text"
+                    className='text-black'
                   />
                   {error && <p className="col-start-2">{error.message}</p>}
                 </>
@@ -174,17 +177,38 @@ export default function ValidateFormData() {
             {errors.hasCats && <p className="col-start-2">{errors.hasCats.message}</p>}
 
             {/* numberOfCats */}
-            <label htmlFor="numberOfCats">Number of Cats</label>
-            <input
-              {...register('numberOfCats')}
-              className='text-black'
-              id="numberOfCats"
-              type="text"
-            />
-            {errors.numberOfCats && <p className="col-start-2">{errors.numberOfCats.message}</p>}
-          </fieldset>
+            <Controller
+              control={control}
+              name="numberOfCats"
+              render={({
+                field: { onChange, onBlur, name, ref, value },
+                fieldState: { invalid, isTouched, isDirty, error },
+                // formState
+              }) => (
+                <>
+                  <label htmlFor="numberOfCats">Number of Cat</label>
+                  <input
+                    id={name}
+                    name={name}
+                    onBlur={onBlur}
+                    onChange={(event: ChangeEvent<HTMLInputElement>): void => {
+                      const currentValue: string = event.target.value;
+                      const nextValue = currentValue === ''
+                        ? undefined
+                        : currentValue;
 
-          {!isValid && <p className="mb-4">Form contains errors.</p>}
+                      onChange(nextValue);
+                    }}
+                    value={value === undefined ? '' : value}
+                    ref={ref}
+                    type="text"
+                    className='text-black'
+                  />
+                  {error && <p className="col-start-2">{error.message}</p>}
+                </>
+              )}
+            />
+          </fieldset>
 
           <div className="flex gap-4 mb-4">
             <button type="reset" className="p-2 border border-white">
