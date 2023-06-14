@@ -27,7 +27,14 @@ module.exports = {
     'react/prop-types': 'off',
     'import/prefer-default-export': 'off',
     'react/react-in-jsx-scope': 'off',
-    'jsx-a11y/label-has-associated-control': 'off',
+    'jsx-a11y/label-has-associated-control': [
+      'error',
+      {
+        required: {
+          some: ['id'],
+        },
+      },
+    ],
     'react/jsx-props-no-spreading': 'off',
     'no-restricted-exports': 'off',
   },

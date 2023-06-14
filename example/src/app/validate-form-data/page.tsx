@@ -218,6 +218,34 @@ export default function ValidateFormData() {
                 </>
               )}
             />
+
+            {/* in office */}
+            <span className="self-start">Days in the office</span>
+            <div className="grid grid-cols-[repeat(5,min-content)_max-content_auto] gap-4">
+              <ol className="contents">
+                {['Mo', 'Tu', 'We', 'Th', 'Fr'].map((day: string) => (
+                  <li key={day} className="flex flex-col gap-2">
+                    <label htmlFor={day}>{day}</label>
+                    <input
+                      name="daysInTheOffice"
+                      id={day}
+                       // {...register('daysInTheOffice')}
+                      className="text-black col-end-auto"
+                      type="checkbox"
+                    />
+                  </li>
+                ))}
+              </ol>
+              <span className="row-start-2 col-span-full">error</span>
+
+              <label htmlFor="daysInTheOfficeMeter" className="pl-4">
+                <span>Days in the office: </span>
+                <code>0</code>
+                <span>/5</span>
+              </label>
+              <meter id="daysInTheOfficeMeter" min={0} max={5} value={3} />
+            </div>
+
           </fieldset>
 
           <div className="flex gap-4 mb-4">
