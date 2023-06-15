@@ -10,7 +10,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import BackButton from '@/components/BackButton';
 
 import { schema } from '../../schema/schema';
-import { titles } from '../../schema/schema.constants';
+import { titles, daysOfWorkWeek, minimumDaysInTheOffice } from '../../schema/schema.constants';
 import type { Schema } from '../../schema/schema.types';
 
 // https://stackoverflow.com/questions/73582246/zod-schema-how-to-make-a-field-optional-or-have-a-minimum-string-contraint
@@ -22,6 +22,7 @@ const initialFormState: DefaultValues<Schema> = {
   lastName: '',
   hasCats: false,
   numberOfCats: undefined,
+  daysInTheOffice: [],
 };
 const titlesWithDefaultValue = ['', ...titles];
 
@@ -31,7 +32,6 @@ export default function ValidateFormData() {
     handleSubmit,
     formState: { errors },
     reset,
-    getValues,
     watch,
     trigger,
     control,
@@ -39,12 +39,13 @@ export default function ValidateFormData() {
     defaultValues: initialFormState,
     resolver: zodResolver(schema),
   });
+  const [hasCats, daysInTheOffice] = watch(['hasCats', 'daysInTheOffice']);
 
   // trigger numberOfCats validation, when hasCats is toggled
   useEffect(() => {
     trigger('numberOfCats');
     // todo only trigger when other errors are also shown
-  }, [watch('hasCats'), trigger]);
+  }, [hasCats, trigger]);
 
   function onSubmit(value: unknown): void {
     console.log('submit', value);
@@ -60,7 +61,7 @@ export default function ValidateFormData() {
   }
 
   // console.log(errors);
-  console.log(watch());
+  // console.log(watch());
 
   return (
     <main className="flex min-h-screen p-24">
@@ -223,7 +224,7 @@ export default function ValidateFormData() {
             <span className="self-start">Days in the office</span>
             <div className="grid grid-cols-[repeat(5,min-content)_auto] gap-4">
               <ol className="contents">
-                {['Mo', 'Tu', 'We', 'Th', 'Fr'].map((day: string) => (
+                {daysOfWorkWeek.map((day) => (
                   <li key={day} className="contents">
                     <label
                       htmlFor={day}
@@ -232,32 +233,31 @@ export default function ValidateFormData() {
                       {day}
                     </label>
                     <input
-                      name="daysInTheOffice"
+                      {...register('daysInTheOffice')}
                       id={day}
-                       // {...register('daysInTheOffice')}
+                      value={day}
                       className="text-black row-start-2 row-end-2"
                       type="checkbox"
                     />
                   </li>
                 ))}
               </ol>
-              <span className="row-start-3 row-end-3 col-span-full">error</span>
-
-              <label htmlFor="daysInTheOfficeMeter" className="pl-4 row-start-1 row-end-1">
+              {errors.daysInTheOffice && <p className="row-start-3 row-end-3 col-span-full">{errors.daysInTheOffice.message}</p>}
+              <span className="pl-4 row-start-1 row-end-1">
                 <span>Mandatory days in the office: </span>
-                <code>3</code>
-              </label>
-              <div className="row-start-2 row-end-2 pl-4">
+                <code>{minimumDaysInTheOffice}</code>
+              </span>
+              <label htmlFor="daysInTheOfficeMeter" className="row-start-2 row-end-2 pl-4">
                 <span>Number of selected days: </span>
-                <code>0</code>
+                <code>{daysInTheOffice.length}</code>
                 <meter
-                  id="daysInTheOfficeMeter"
                   min={0}
-                  max={5}
-                  value={0}
-                  className="w-16 pl-4"
+                  max={daysOfWorkWeek.length}
+                  value={daysInTheOffice.length}
+                  id="daysInTheOfficeMeter"
+                  className="w-32 pl-4"
                 />
-              </div>
+              </label>
             </div>
           </fieldset>
 

@@ -4,7 +4,7 @@
 /* eslint-disable comma-style */
 import { z } from 'zod';
 
-import { titles, daysOfWorkWeek } from './schema.constants';
+import { titles, daysOfWorkWeek, minimumDaysInTheOffice } from './schema.constants';
 
 // not available in Firefox
 const stringSplitter = new Intl.Segmenter('en', {
@@ -123,22 +123,22 @@ export const schema = z
     // #region daysInTheOffice
     daysInTheOffice: z
       .array(z.enum(daysOfWorkWeek))
-      .min(3, { message: 'At least 3 days must be selected' })
-      .max(daysOfWorkWeek.length, { message: `Can't select more than ${daysOfWorkWeek.length}` })
-      // filter out non workday values
+      .min(minimumDaysInTheOffice, { message: `At least ${minimumDaysInTheOffice} days must be selected` })
+      .max(daysOfWorkWeek.length, { message: `Can't select more than ${daysOfWorkWeek.length} days` })
+      // detect non workday values
       .refine(
         (days): boolean => {
-          const daysNotInDaysOfWorkWeek = days.filter((day) => !daysOfWorkWeek.includes(day));
+          const hasNonWorkDaysInArray = days.some((day) => !daysOfWorkWeek.includes(day));
 
-          return daysNotInDaysOfWorkWeek.length === 0;
+          return !hasNonWorkDaysInArray;
         },
         {
-          message: 'Array should only contain values from daysOfWorkWeek',
+          message: `daysInTheOffice mustn't contain values other than ${stringEnumerationFormatter.format(titles)}`,
         },
       )
-      // remove duplicates: https://github.com/colinhacks/zod/discussions/2316
+      // detect duplicates: https://github.com/colinhacks/zod/discussions/2316
       .refine((days): boolean => new Set(days).size === days.length, {
-        message: 'Array should not contain duplicate values',
+        message: 'daysInTheOffice mustn\'t contain duplicate values',
       }),
     // #endregion
   })
