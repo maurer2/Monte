@@ -1,7 +1,5 @@
-/* eslint-disable max-len */
-/* eslint-disable function-paren-newline */
+/* eslint-disable max-len, comma-style, function-paren-newline */
 /* eslint-disable @typescript-eslint/indent */
-/* eslint-disable comma-style */
 import { z } from 'zod';
 
 import { titles, daysOfWorkWeek, minimumDaysInTheOffice } from './schema.constants';
@@ -122,9 +120,11 @@ export const schema = z
 
     // #region daysInTheOffice
     daysInTheOffice: z
-      .array(z.enum(daysOfWorkWeek))
-      .min(minimumDaysInTheOffice, { message: `At least ${minimumDaysInTheOffice} days must be selected` })
-      .max(daysOfWorkWeek.length, { message: `Can't select more than ${daysOfWorkWeek.length} days` })
+      .array(
+        z.enum(daysOfWorkWeek).or(z.string()),
+      )
+      .min(minimumDaysInTheOffice, { message: `daysInTheOffice must contain at least ${minimumDaysInTheOffice} days` })
+      .max(daysOfWorkWeek.length, { message: `daysInTheOffice mustn't contain more than ${daysOfWorkWeek.length} days` })
       // detect non workday values
       .refine(
         (days): boolean => {
@@ -133,7 +133,7 @@ export const schema = z
           return !hasNonWorkDaysInArray;
         },
         {
-          message: `daysInTheOffice mustn't contain values other than ${stringEnumerationFormatter.format(titles)}`,
+          message: `daysInTheOffice mustn't contain values other than ${stringEnumerationFormatter.format(daysOfWorkWeek)}`,
         },
       )
       // detect duplicates: https://github.com/colinhacks/zod/discussions/2316

@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { faker } from '@faker-js/faker';
 
 import { schema } from './schema';
+import { daysOfWorkWeek } from './schema.constants';
 import type { Schema } from './schema.types';
 
 describe('schema', () => {
@@ -120,6 +121,7 @@ describe('schema', () => {
         lastName: faker.person.lastName(),
         middleName: 'Charles',
         hasCats: false,
+        daysInTheOffice: [...daysOfWorkWeek],
       };
       expect(schema.safeParse(schemaValue).success).toBeFalsy();
 
@@ -169,6 +171,7 @@ describe('schema', () => {
         lastName: '',
         middleName: 'Charles',
         hasCats: false,
+        daysInTheOffice: [...daysOfWorkWeek],
       };
       expect(schema.safeParse(schemaValue).success).toBeFalsy();
 
@@ -188,6 +191,7 @@ describe('schema', () => {
         lastName: faker.person.lastName(),
         middleName: 'Charles',
         hasCats: false,
+        daysInTheOffice: [...daysOfWorkWeek],
       };
       expect(schema.safeParse(schemaValue).success).toBeTruthy();
     });
@@ -198,6 +202,7 @@ describe('schema', () => {
         firstName: faker.person.firstName(),
         lastName: faker.person.lastName(),
         hasCats: false,
+        daysInTheOffice: [...daysOfWorkWeek],
       };
       expect(schema.safeParse(schemaValue).success).toBeTruthy();
     });
@@ -209,6 +214,7 @@ describe('schema', () => {
         lastName: faker.person.lastName(),
         middleName: '',
         hasCats: false,
+        daysInTheOffice: [...daysOfWorkWeek],
       };
       expect(schema.safeParse(schemaValue).success).toBeFalsy();
 
@@ -242,6 +248,7 @@ describe('schema', () => {
         lastName: faker.person.lastName(),
         middleName: 'a',
         hasCats: false,
+        daysInTheOffice: [...daysOfWorkWeek],
       };
       expect(schema.safeParse(schemaValue).success).toBeTruthy();
     });
@@ -253,6 +260,7 @@ describe('schema', () => {
         lastName: faker.person.lastName(),
         middleName: 'taco cat',
         hasCats: false,
+        daysInTheOffice: [...daysOfWorkWeek],
       };
       expect(schema.safeParse(schemaValue).success).toBeFalsy();
 
@@ -270,6 +278,7 @@ describe('schema', () => {
         lastName: faker.person.lastName(),
         middleName: '🐈‍⬛wow🐈‍⬛', // each emoji contains 4 characters
         hasCats: false,
+        daysInTheOffice: [...daysOfWorkWeek],
       };
       expect(schema.safeParse(schemaValue).success).toBeFalsy();
 
@@ -289,6 +298,7 @@ describe('schema', () => {
         lastName: faker.person.lastName(),
         middleName: 'Charles',
         hasCats: 'false',
+        daysInTheOffice: [...daysOfWorkWeek],
       };
       expect(schema.safeParse(schemaValue).success).toBeFalsy();
 
@@ -309,6 +319,7 @@ describe('schema', () => {
         middleName: 'Charles',
         hasCats: true,
         numberOfCats: 50,
+        daysInTheOffice: [...daysOfWorkWeek],
       };
       expect(schema.safeParse(schemaValue).success).toBeTruthy();
     });
@@ -321,6 +332,7 @@ describe('schema', () => {
         middleName: 'Charles',
         hasCats: true,
         numberOfCats: '50',
+        daysInTheOffice: [...daysOfWorkWeek],
       };
       expect(schema.safeParse(schemaValue).success).toBeTruthy();
     });
@@ -351,6 +363,7 @@ describe('schema', () => {
         middleName: 'Charles',
         hasCats: true,
         numberOfCats: faker.number.float(),
+        daysInTheOffice: [...daysOfWorkWeek],
       };
       expect(schema.safeParse(schemaValue).success).toBeFalsy();
 
@@ -369,6 +382,7 @@ describe('schema', () => {
         middleName: 'Charles',
         hasCats: true,
         numberOfCats: 1,
+        daysInTheOffice: [...daysOfWorkWeek],
       };
 
       Array.from(Array(50).keys()).forEach((testValue) => {
@@ -387,6 +401,7 @@ describe('schema', () => {
         middleName: 'Charles',
         hasCats: true,
         numberOfCats: 0,
+        daysInTheOffice: [...daysOfWorkWeek],
       };
       expect(schema.safeParse(schemaValue).success).toBeFalsy();
 
@@ -405,6 +420,7 @@ describe('schema', () => {
         middleName: 'Charles',
         hasCats: true,
         numberOfCats: 51,
+        daysInTheOffice: [...daysOfWorkWeek],
       };
       expect(schema.safeParse(schemaValue).success).toBeFalsy();
 
@@ -425,6 +441,7 @@ describe('schema', () => {
         middleName: 'Charles',
         hasCats: false,
         numberOfCats: 50,
+        daysInTheOffice: [...daysOfWorkWeek],
       };
       expect(schema.safeParse(schemaValue).success).toBeFalsy();
 
@@ -442,6 +459,7 @@ describe('schema', () => {
         lastName: faker.person.lastName(),
         middleName: 'Charles',
         hasCats: true,
+        daysInTheOffice: [...daysOfWorkWeek],
       };
       expect(schema.safeParse(schemaValue).success).toBeFalsy();
 
@@ -449,6 +467,129 @@ describe('schema', () => {
       if (!result.success) {
         const error = result.error.format();
         expect(error.numberOfCats?._errors).toContain('numberOfCats must be set if hasCats is true');
+      }
+    });
+  });
+
+  describe('daysInTheOffice', () => {
+    it('should parse successfully when daysInTheOffice contains three days', () => {
+      const schemaValue: Schema = {
+        title: 'Mr.',
+        firstName: faker.person.firstName(),
+        lastName: faker.person.lastName(),
+        middleName: 'Charles',
+        hasCats: true,
+        numberOfCats: 50,
+        daysInTheOffice: ['Mo', 'Th', 'We'],
+      };
+      expect(schema.safeParse(schemaValue).success).toBeTruthy();
+    });
+
+    it('should parse successfully when daysInTheOffice contains five days', () => {
+      const schemaValue: Schema = {
+        title: 'Mr.',
+        firstName: faker.person.firstName(),
+        lastName: faker.person.lastName(),
+        middleName: 'Charles',
+        hasCats: true,
+        numberOfCats: 50,
+        daysInTheOffice: [...daysOfWorkWeek],
+      };
+      expect(schema.safeParse(schemaValue).success).toBeTruthy();
+    });
+
+    it('should fail parsing when daysInTheOffice is empty', () => {
+      const schemaValue: Schema = {
+        title: 'Mr.',
+        firstName: faker.person.firstName(),
+        lastName: faker.person.lastName(),
+        middleName: 'Charles',
+        hasCats: true,
+        numberOfCats: 50,
+        daysInTheOffice: [],
+      };
+      expect(schema.safeParse(schemaValue).success).toBeFalsy();
+
+      const result = schema.safeParse(schemaValue);
+      if (!result.success) {
+        const error = result.error.format();
+        expect(error.daysInTheOffice?._errors).toContain('daysInTheOffice must contain at least 3 days');
+      }
+    });
+
+    it('should fail parsing when daysInTheOffice contains less than 3 days', () => {
+      const schemaValue: Schema = {
+        title: 'Mr.',
+        firstName: faker.person.firstName(),
+        lastName: faker.person.lastName(),
+        middleName: 'Charles',
+        hasCats: true,
+        numberOfCats: 50,
+        daysInTheOffice: ['Mo', 'Th'],
+      };
+      expect(schema.safeParse(schemaValue).success).toBeFalsy();
+
+      const result = schema.safeParse(schemaValue);
+      if (!result.success) {
+        const error = result.error.format();
+        expect(error.daysInTheOffice?._errors).toContain('daysInTheOffice must contain at least 3 days');
+      }
+    });
+
+    it('should fail parsing when daysInTheOffice contains more than 5 days', () => {
+      const schemaValue = {
+        title: 'Mr.',
+        firstName: faker.person.firstName(),
+        lastName: faker.person.lastName(),
+        middleName: 'Charles',
+        hasCats: true,
+        numberOfCats: 50,
+        daysInTheOffice: [...daysOfWorkWeek, 'Sa'],
+      };
+      expect(schema.safeParse(schemaValue).success).toBeFalsy();
+
+      const result = schema.safeParse(schemaValue);
+      if (!result.success) {
+        const error = result.error.format();
+        expect(error.daysInTheOffice?._errors).toContain('daysInTheOffice mustn\'t contain more than 5 days');
+      }
+    });
+
+    it('should fail parsing when daysInTheOffice contains non workdays', () => {
+      const schemaValue = {
+        title: 'Mr.',
+        firstName: faker.person.firstName(),
+        lastName: faker.person.lastName(),
+        middleName: 'Charles',
+        hasCats: true,
+        numberOfCats: 50,
+        daysInTheOffice: ['Mo', 'Tu', 'We', 'Sa'],
+      };
+      expect(schema.safeParse(schemaValue).success).toBeFalsy();
+
+      const result = schema.safeParse(schemaValue);
+      if (!result.success) {
+        const error = result.error.format();
+        expect(error.daysInTheOffice?._errors).toContain('daysInTheOffice mustn\'t contain values other than Mo, Tu, We, Th or Fr');
+      }
+    });
+
+    it('should fail parsing when daysInTheOffice contains duplicates', () => {
+      const schemaValue = {
+        title: 'Mr.',
+        firstName: faker.person.firstName(),
+        lastName: faker.person.lastName(),
+        middleName: 'Charles',
+        hasCats: true,
+        numberOfCats: 50,
+        daysInTheOffice: ['Mo', 'Tu', 'We', 'We'],
+      };
+      expect(schema.safeParse(schemaValue).success).toBeFalsy();
+
+      const result = schema.safeParse(schemaValue);
+      if (!result.success) {
+        const error = result.error.format();
+        expect(error.daysInTheOffice?._errors).toContain('daysInTheOffice mustn\'t contain duplicate values');
       }
     });
   });
