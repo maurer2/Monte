@@ -219,33 +219,46 @@ export default function ValidateFormData() {
               )}
             />
 
-            {/* in office */}
+            {/* daysInTheOffice */}
             <span className="self-start">Days in the office</span>
-            <div className="grid grid-cols-[repeat(5,min-content)_max-content_auto] gap-4">
+            <div className="grid grid-cols-[repeat(5,min-content)_auto] gap-4">
               <ol className="contents">
                 {['Mo', 'Tu', 'We', 'Th', 'Fr'].map((day: string) => (
-                  <li key={day} className="flex flex-col gap-2">
-                    <label htmlFor={day}>{day}</label>
+                  <li key={day} className="contents">
+                    <label
+                      htmlFor={day}
+                      className="row-start-1 row-end-1"
+                    >
+                      {day}
+                    </label>
                     <input
                       name="daysInTheOffice"
                       id={day}
                        // {...register('daysInTheOffice')}
-                      className="text-black col-end-auto"
+                      className="text-black row-start-2 row-end-2"
                       type="checkbox"
                     />
                   </li>
                 ))}
               </ol>
-              <span className="row-start-2 col-span-full">error</span>
+              <span className="row-start-3 row-end-3 col-span-full">error</span>
 
-              <label htmlFor="daysInTheOfficeMeter" className="pl-4">
-                <span>Days in the office: </span>
-                <code>0</code>
-                <span>/5</span>
+              <label htmlFor="daysInTheOfficeMeter" className="pl-4 row-start-1 row-end-1">
+                <span>Mandatory days in the office: </span>
+                <code>3</code>
               </label>
-              <meter id="daysInTheOfficeMeter" min={0} max={5} value={3} />
+              <div className="row-start-2 row-end-2 pl-4">
+                <span>Number of selected days: </span>
+                <code>0</code>
+                <meter
+                  id="daysInTheOfficeMeter"
+                  min={0}
+                  max={5}
+                  value={0}
+                  className="w-16 pl-4"
+                />
+              </div>
             </div>
-
           </fieldset>
 
           <div className="flex gap-4 mb-4">

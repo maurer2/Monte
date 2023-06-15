@@ -1,9 +1,10 @@
+/* eslint-disable max-len */
 /* eslint-disable function-paren-newline */
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable comma-style */
 import { z } from 'zod';
 
-import { titles } from './schema.constants';
+import { titles, daysOfWorkWeek } from './schema.constants';
 
 // not available in Firefox
 const stringSplitter = new Intl.Segmenter('en', {
@@ -117,6 +118,28 @@ export const schema = z
           .optional(),
       )
     ,
+    // #endregion
+
+    // #region daysInTheOffice
+    daysInTheOffice: z
+      .array(z.enum(daysOfWorkWeek))
+      .min(3, { message: 'At least 3 days must be selected' })
+      .max(daysOfWorkWeek.length, { message: `Can't select more than ${daysOfWorkWeek.length}` })
+      // filter out non workday values
+      .refine(
+        (days): boolean => {
+          const daysNotInDaysOfWorkWeek = days.filter((day) => !daysOfWorkWeek.includes(day));
+
+          return daysNotInDaysOfWorkWeek.length === 0;
+        },
+        {
+          message: 'Array should only contain values from daysOfWorkWeek',
+        },
+      )
+      // remove duplicates: https://github.com/colinhacks/zod/discussions/2316
+      .refine((days): boolean => new Set(days).size === days.length, {
+        message: 'Array should not contain duplicate values',
+      }),
     // #endregion
   })
   .strict()
