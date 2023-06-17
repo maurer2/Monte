@@ -89,9 +89,9 @@ export const schema = z
     // makes numberOfCats field available or unavailable
     hasCats: z
       .boolean({
+        required_error: 'hasCats must be set',
         invalid_type_error: 'hasCats must be a boolean',
       })
-      .default(false)
     ,
     // #endregion
 
@@ -122,6 +122,9 @@ export const schema = z
     daysInTheOffice: z
       .array(
         z.enum(daysOfWorkWeek).or(z.string()),
+        {
+          required_error: 'daysInTheOffice must be set',
+        },
       )
       .min(minimumDaysInTheOffice, { message: `daysInTheOffice must contain at least ${minimumDaysInTheOffice} days` })
       .max(daysOfWorkWeek.length, { message: `daysInTheOffice mustn't contain more than ${daysOfWorkWeek.length} days` })
