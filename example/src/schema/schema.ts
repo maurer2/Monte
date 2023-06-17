@@ -1,5 +1,4 @@
-/* eslint-disable max-len, comma-style, function-paren-newline */
-/* eslint-disable @typescript-eslint/indent */
+/* eslint-disable max-len, comma-style, function-paren-newline, @typescript-eslint/indent */
 import { z } from 'zod';
 
 import { titles, daysOfWorkWeek, minimumDaysInTheOffice } from './schema.constants';
@@ -146,7 +145,6 @@ export const schema = z
     // #endregion
   })
   .strict()
-
   // numberOfCats shouldn't be set if hasCats is false
   .refine(
     ({ hasCats, numberOfCats }): boolean => {
@@ -160,7 +158,6 @@ export const schema = z
       path: ['numberOfCats'],
     },
   )
-
   // numberOfCats should be set if hasCats is true
   .refine(
     ({ hasCats, numberOfCats }): boolean => {

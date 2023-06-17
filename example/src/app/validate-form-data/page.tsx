@@ -7,6 +7,7 @@ import type { DefaultValues } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 // import { DevTool } from '@hookform/devtools';
 
+// eslint-disable-next-line import/extensions
 import BackButton from '@/components/BackButton';
 
 import { schema } from '../../schema/schema';
@@ -64,8 +65,8 @@ export default function ValidateFormData() {
   // console.log(watch());
 
   return (
-    <main className="flex min-h-screen p-24">
-      <div className="z-10 w-full max-w-5xl font-mono text-sm">
+    <main className="min-h-screen p-24 font-sans">
+      <div className="w-full max-w-5xl">
         <h1 className="mb-4">Validate form data</h1>
 
         {/* <DevTool control={control} placement="top-right" /> */}
@@ -270,9 +271,8 @@ export default function ValidateFormData() {
             </button>
           </div>
         </form>
-
-        <BackButton cssClass="mt-4" />
       </div>
+      <BackButton cssClass="mt-4" />
     </main>
   );
 }

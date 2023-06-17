@@ -25,6 +25,7 @@ module.exports = {
     'react/display-name': 'off',
     'react/button-has-type': 'off', // allow reset button
     'react/prop-types': 'off',
+    'react/require-default-props': 'off',
     'import/prefer-default-export': 'off',
     'react/react-in-jsx-scope': 'off',
     'jsx-a11y/label-has-associated-control': [
@@ -47,5 +48,6 @@ module.exports = {
         tsx: 'never',
       },
     ],
+    '@typescript-eslint/comma-dangle': 'off',
   },
 };

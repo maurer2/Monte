@@ -1,12 +1,13 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import type { ReactElement } from 'react';
 
 type BackButtonProps = {
   cssClass?: string;
 };
 
-export default function BackButton({ cssClass }: BackButtonProps) {
+export default function BackButton({ cssClass }: BackButtonProps): ReactElement {
   const router = useRouter();
 
   return (
