@@ -14,7 +14,7 @@ export default function Home() {
             <Link href="/validate-form-data">Validate form data</Link>
           </li>
           <li className="list-disc">
-            <Link href="/validate-incoming-data-server">Validate incoming data server</Link>
+            <Link href="/validate-incoming-data-on-the-server">Validate incoming data on the server</Link>
           </li>
         </ul>
       </div>
