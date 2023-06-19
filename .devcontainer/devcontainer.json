@@ -18,6 +18,7 @@
   "customizations": {
     "vscode": {
       "settings": {
+        "terminal.integrated.defaultProfile.linux": "zsh",
         "typescript.validate.enable": true,
         "typescript.inlayHints.variableTypes.enabled": true,
         "typescript.inlayHints.parameterTypes.enabled": true,
@@ -32,7 +33,6 @@
       },
       "extensions": [
         "aaron-bond.better-comments",
-        "attilabuti.vscode-mjml",
         "ban.spellright",
         "bradlc.vscode-tailwindcss",
         "christian-kohler.path-intellisense",
@@ -65,7 +65,6 @@
         "shardulm94.trailing-spaces",
         "shd101wyy.markdown-preview-enhanced",
         "streetsidesoftware.code-spell-checker",
-        "styled-components.vscode-styled-components",
         "stylelint.vscode-stylelint",
         "uctakeoff.vscode-counter",
         "unifiedjs.vscode-mdx",
