@@ -2,27 +2,12 @@
 
 import { useEffect, useState } from 'react';
 
-import Image from 'next/image';
-
 // eslint-disable-next-line import/extensions
 import BackButton from '@/components/BackButton';
 
-// import { schema } from '../../schema/schema';
 import type { Schema } from '../../schema/schema.types';
 import { daysOfWorkWeek } from '../../schema/schema.constants';
-
-type SuccessPayload = {
-  status: 'success',
-  message: string
-};
-
-type ErrorPayload = {
-  status: 'error',
-  data?: string,
-  message: string
-};
-
-type Payload = SuccessPayload | ErrorPayload;
+import type { SuccessPayload, Payload } from '../api/set-data/types';
 
 const setApiData = async <T,>(url: string, data: T) => {
   const response = await fetch(url, {
@@ -37,11 +22,12 @@ const setApiData = async <T,>(url: string, data: T) => {
 
   if (!response.ok) {
     if (payload.status === 'error') {
-      throw new Error(payload?.data ?? payload?.message);
+      throw new Error(payload.message, { cause: payload.data });
     }
+    throw new Error('Response error');
   }
 
-  return payload;
+  return payload as SuccessPayload;
 };
 
 const dataValid: Schema = {
@@ -49,7 +35,7 @@ const dataValid: Schema = {
   firstName: 'Cat',
   lastName: 'Stevens',
   hasCats: true,
-  numberOfCats: 100,
+  numberOfCats: 1,
   daysInTheOffice: [...daysOfWorkWeek],
 };
 
@@ -67,18 +53,27 @@ export default function ValidateIncomingDataServer() {
   const [invalidDataResponse, setInvalidDataResponse] = useState<any>(null);
 
   useEffect(() => {
+    // valid data
+    (async () => {
+      try {
+        const response = await setApiData('/api/set-data', dataValid);
+        setValidDataResponse(response);
+      } catch (error) {
+        if (error instanceof Error) {
+          setInvalidDataResponse(error.cause);
+        }
+      }
+    })();
+
+    // invalid data
     (async () => {
       try {
         const response = await setApiData('/api/set-data', dataInvalid);
         setInvalidDataResponse(response);
-        console.log(response);
       } catch (error) {
         if (error instanceof Error) {
-          if (typeof error.message === 'string') {
-            setInvalidDataResponse(error.message);
-          }
+          setInvalidDataResponse(error.cause);
         }
-        // console.log(error instanceof Error ? error.message : 'Error');
       }
     })();
   }, []);
@@ -89,21 +84,37 @@ export default function ValidateIncomingDataServer() {
         <h1 className="mb-4 col-span-full">Validate incoming data on the server</h1>
 
         <section>
-          <Image src="/under-construction.gif" alt="" className="" width={133} height={133} priority />
-
+          <h2 className="mb-4">Payload</h2>
+          <code className="mb-4 block font-mono">
+            <pre className="whitespace-pre-wrap">
+              {JSON.stringify(dataValid, undefined, 2)}
+            </pre>
+          </code>
+          <h2 className="mb-4">Response</h2>
+          {validDataResponse !== null && (
+            <code className="mb-4 block font-mono">
+              <pre className="whitespace-pre-wrap">
+                {JSON.stringify(validDataResponse, undefined, 2)}
+              </pre>
+            </code>
+          )}
         </section>
 
         <section>
-          <h2 className="mb-4">Payload 2</h2>
-          <code className="mb-4 block font-mono">
-            <pre className="whitespace-pre-wrap">{JSON.stringify(dataInvalid, undefined, 2)}</pre>
-          </code>
-          <h2 className="mb-4">Response 2</h2>
+          <h2 className="mb-4">Payload</h2>
           <code className="mb-4 block font-mono">
             <pre className="whitespace-pre-wrap">
-              {JSON.stringify(JSON.parse(invalidDataResponse), undefined, 2)}
+              {JSON.stringify(dataInvalid, undefined, 2)}
             </pre>
           </code>
+          <h2 className="mb-4">Response</h2>
+          {invalidDataResponse !== null && (
+            <code className="mb-4 block font-mono">
+              <pre className="whitespace-pre-wrap">
+                {JSON.stringify(invalidDataResponse, undefined, 2)}
+              </pre>
+            </code>
+          )}
         </section>
       </div>
       <BackButton cssClass="mt-4" />
