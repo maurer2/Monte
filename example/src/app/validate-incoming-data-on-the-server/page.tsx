@@ -1,13 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { serializeError } from 'serialize-error';
 
 // eslint-disable-next-line import/extensions
 import BackButton from '@/components/BackButton';
 
 import type { Schema } from '../../schema/schema.types';
 import { daysOfWorkWeek } from '../../schema/schema.constants';
-import type { SuccessPayload, Payload } from '../api/set-data/types';
+import type { SuccessResponse, ErrorResponse, ResponseTypes } from '../api/set-data/types';
 
 const setApiData = async <T,>(url: string, data: T) => {
   const response = await fetch(url, {
@@ -18,16 +19,13 @@ const setApiData = async <T,>(url: string, data: T) => {
     body: JSON.stringify(data),
   });
 
-  const payload: Payload = await response.json() as Payload;
+  const responseData: ResponseTypes = await response.json() as ResponseTypes;
 
-  if (!response.ok) {
-    if (payload.status === 'error') {
-      throw new Error(payload.message, { cause: payload.data });
-    }
-    throw new Error('Response error');
+  if (responseData.status === 'error') {
+    return new Error(responseData.data.message, { cause: responseData.data.issues });
   }
 
-  return payload as SuccessPayload;
+  return responseData;
 };
 
 const dataValid: Schema = {
@@ -49,8 +47,8 @@ const dataInvalid = {
 };
 
 export default function ValidateIncomingDataServer() {
-  const [validDataResponse, setValidDataResponse] = useState<any>(null);
-  const [invalidDataResponse, setInvalidDataResponse] = useState<any>(null);
+  const [validDataResponse, setValidDataResponse] = useState<ResponseTypes | Error>();
+  const [invalidDataResponse, setInvalidDataResponse] = useState<ResponseTypes | Error>();
 
   useEffect(() => {
     // valid data
@@ -60,8 +58,9 @@ export default function ValidateIncomingDataServer() {
         setValidDataResponse(response);
       } catch (error) {
         if (error instanceof Error) {
-          setInvalidDataResponse(error.cause);
+          setValidDataResponse(error);
         }
+        setValidDataResponse(new Error('Unknown error'));
       }
     })();
 
@@ -72,8 +71,9 @@ export default function ValidateIncomingDataServer() {
         setInvalidDataResponse(response);
       } catch (error) {
         if (error instanceof Error) {
-          setInvalidDataResponse(error.cause);
+          setInvalidDataResponse(error);
         }
+        setInvalidDataResponse(new Error('Unknown error'));
       }
     })();
   }, []);
@@ -94,7 +94,7 @@ export default function ValidateIncomingDataServer() {
           {validDataResponse !== null && (
             <code className="mb-4 block font-mono">
               <pre className="whitespace-pre-wrap">
-                {JSON.stringify(validDataResponse, undefined, 2)}
+                {JSON.stringify(serializeError(validDataResponse), undefined, 2)}
               </pre>
             </code>
           )}
@@ -111,7 +111,7 @@ export default function ValidateIncomingDataServer() {
           {invalidDataResponse !== null && (
             <code className="mb-4 block font-mono">
               <pre className="whitespace-pre-wrap">
-                {JSON.stringify(invalidDataResponse, undefined, 2)}
+                {JSON.stringify(serializeError(invalidDataResponse), undefined, 2)}
               </pre>
             </code>
           )}

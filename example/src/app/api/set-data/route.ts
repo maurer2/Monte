@@ -4,7 +4,7 @@ import { ZodError } from 'zod';
 import { fromZodError } from 'zod-validation-error';
 
 import { schema } from '../../../schema/schema';
-import type { SuccessPayload, ErrorPayload } from './types';
+import type { SuccessResponse, ErrorResponse } from './types';
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
@@ -14,8 +14,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json(
       {
         status: 'success',
-        message: 'Schema valid',
-      } satisfies SuccessPayload,
+        data: {
+          message: 'Validation successful. Payload valid.',
+        },
+      } satisfies SuccessResponse,
       {
         status: 200,
       },
@@ -25,9 +27,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       return NextResponse.json(
         {
           status: 'error',
-          message: 'Validation error',
-          data: fromZodError(error).details,
-        } satisfies ErrorPayload,
+          data: {
+            message: 'Validation failed. Payload invalid.',
+            issues: fromZodError(error).details,
+          }
+        } satisfies ErrorResponse,
         {
           status: 400,
         },
@@ -36,8 +40,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json(
       {
         status: 'error',
-        message: error instanceof Error ? error.message : 'Unknown error',
-      } satisfies ErrorPayload,
+        data: {
+          message: error instanceof Error ? error.message : 'Unknown error.',
+        }
+      } satisfies ErrorResponse,
       {
         status: 400,
       },

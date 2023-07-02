@@ -1,14 +1,10 @@
-import type { ZodIssue } from 'zod';
+import type { z } from 'zod';
+import type { responseSchema } from './schema';
 
-export type SuccessPayload = {
-  status: 'success',
-  message: string,
-};
+export type ResponseTypes = z.infer<typeof responseSchema>;
 
-export type ErrorPayload = {
-  status: 'error',
-  message: string,
-  data?: ZodIssue[],
-};
+// extract unnamed union type members to named types for improved readability
+export type SuccessResponse = Extract<ResponseTypes, { status: 'success' }>;
+export type ErrorResponse = Extract<ResponseTypes, { status: 'error' }>;
 
-export type Payload = SuccessPayload | ErrorPayload;
+type Test = Extract<ResponseTypes, { status: 'meouw' }>; // no error, but returns never
