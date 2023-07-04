@@ -37,5 +37,5 @@ src: ./pages/features.md
 ---
 
 ---
-src: ./pages/schema-examples.md
+src: ./pages/validation.md
 ---
