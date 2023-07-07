@@ -10,10 +10,10 @@
     "open:dist": "serve"
   },
   "dependencies": {
-    "@slidev/cli": "^0.40.16",
-    "@slidev/theme-default": "*",
-    "@slidev/theme-seriph": "*",
-    "playwright-chromium": "^1.33.0",
+    "@slidev/cli": "^0.42.5",
+    "@slidev/theme-default": "0.21.2",
+    "@slidev/theme-seriph": "0.21.3",
+    "playwright-chromium": "^1.35.1",
     "serve": "^14.2.0"
   }
 }
