@@ -6,20 +6,78 @@ image: https://source.unsplash.com/collection/94734566/1920x1080
 ## Validation
 
 ---
+layout: two-cols
+image: https://source.unsplash.com/collection/94734566/1920x1080
+---
+
+## Intro examples
+
+Schema
+```ts
+const someString = z.string({
+    invalid_type_error: 'Must be a string',
+    required_error: 'Is required',
+  })
+  .trim()
+  .min(1, `Shouldn't be empty`)
+  .max(9, `Shouldn't be larger than 9 characters`)
+  .includes('test', {
+    message: `Must contain 'test'`
+  });
+```
+
+::right::
+
+Validation result for "surreptitious"
+
+```json
+[
+  {
+    "code": "too_big",
+    "maximum": 9,
+    "type": "string",
+    "inclusive": true,
+    "exact": false,
+    "message": "Shouldn't be larger than 9 characters",
+    "path": []
+  },
+  {
+    "code": "invalid_string",
+    "validation": {
+      "includes": "test"
+    },
+    "message": "Must contain 'test'",
+    "path": []
+  }
+]
+```
+
+---
+layout: image-right
+image: https://source.unsplash.com/collection/94734566/1920x1080
+---
+
+## Intro
+
+<!-- Each validator supports a custom error message -->
+
+
+
+---
 layout: image-right
 image: https://source.unsplash.com/collection/94734566/1920x1080
 ---
 
 ## Supported types - The usual ones
 
-* string
-* number
+* string (`email`, `url`, `uuid`, `regex`, `includes`, `startsWith`, `endsWith`, `dateString` etc.)
+* number (`integer`, `float`, `positive`, `negative`, `multipleOf` etc.)
 * boolean
 * object
-* array
+* array (`min`, `max`, `length`, `nonempty`)
 * undefined
 * null
-* date
+* date (`min`, `max`)
 * bigInt
 
 ---
@@ -95,10 +153,10 @@ image: https://source.unsplash.com/collection/94734566/1920x1080
 
 ## Supported types - The unusual ones
 
+* Enums
 * Union types
 * Discriminated union types
 * Tuples
-* Enums
 
 ---
 layout: image-right
