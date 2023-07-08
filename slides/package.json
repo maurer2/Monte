@@ -9,6 +9,7 @@
     "act:deploy": "act --secret-file .env -W .github/workflows/deploy.yml -j build -w",
     "open:dist": "serve",
     "snippets:single-value-validation": "ts-node snippets/single-value-validation/single-field-validation.ts",
+    "snippets:single-value-validation-custom-validator": "ts-node snippets/single-value-validation-custom-validator/single-value-validation-custom-validator.ts",
     "snippets:single-value-validation-union": "ts-node snippets/single-value-validation-union/single-value-validation-union.ts"
   },
   "dependencies": {

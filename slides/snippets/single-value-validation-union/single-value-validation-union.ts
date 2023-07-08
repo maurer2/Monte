@@ -10,5 +10,13 @@ const someNumberOrArray = z.union([
   ).nonempty('Must not be empty'),
 ]);
 
-console.log(JSON.stringify(someNumberOrArray.safeParse(-1), null, 2));
+const someNumberOrArrayAlternative = z.number({
+  invalid_type_error: 'Must be a number',
+  required_error: 'Is required',
+}).positive('Must be positive')
+.or(z.array(
+  z.number().positive('Must be positive')
+).nonempty('Must not be empty'));
+
 console.log(JSON.stringify(someNumberOrArray.safeParse([1, -1]), null, 2));
+console.log(JSON.stringify(someNumberOrArrayAlternative.safeParse([1, -1]), null, 2));

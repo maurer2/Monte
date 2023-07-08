@@ -11,7 +11,7 @@ layoutClass: gap-4 grid-cols-2 auto-rows-min
 image: https://source.unsplash.com/collection/94734566/1920x1080
 ---
 
-### Validate single field with single type
+### Validate single fields with single types
 
 ::left::
 
@@ -73,7 +73,60 @@ layoutClass: gap-4 grid-cols-2 auto-rows-min
 image: https://source.unsplash.com/collection/94734566/1920x1080
 ---
 
-### Validate single field with multiple types
+### Validate single fields with custom validation logic
+
+::left::
+
+Zod uses `refine` to apply custom validation logic to a field, for validation logic that can't be handled by the built-in validators.
+
+```ts
+const someString = z.string({
+    invalid_type_error: 'Must be a string',
+    required_error: 'Is required',
+  })
+  .trim()
+  .toLowerCase()
+  .min(1, `Shouldn't be empty`)
+  .transform((value: string): string => value.replace(/\s/g, ''))
+  .refine((value: string): boolean => {
+      if (value.length === 1) return true;
+      return value.split('').reverse().join('') !== value;
+    },
+    {
+      message: `Must not be a palindrome`,
+    },
+);
+
+console.log(someString.safeParse('TacoCat'), null, 2);
+```
+
+::right::
+
+Output
+
+```json
+{
+  "success": false,
+  "error": {
+    "issues": [
+      {
+        "code": "custom",
+        "message": "Must not be a palindrome",
+        "path": []
+      }
+    ],
+    "name": "ZodError"
+  }
+}
+```
+
+---
+layout: two-cols-header
+layoutClass: gap-4 grid-cols-2 auto-rows-min
+image: https://source.unsplash.com/collection/94734566/1920x1080
+---
+
+### Validate single fields with multiple types
 
 ::left::
 
@@ -93,7 +146,6 @@ const someNumberOrArray = z.union([
 ]);
 
 console.log(someNumberOrArray.safeParse([1, -1]));
-
 ```
 
 ::right::
@@ -120,6 +172,7 @@ Output
 }
 ```
 
+
 ---
 layout: image-right
 image: https://source.unsplash.com/collection/94734566/1920x1080
@@ -142,7 +195,7 @@ layout: image-right
 image: https://source.unsplash.com/collection/94734566/1920x1080
 ---
 
-## Example - String validation with default validators
+### Example - String validation with default validators
 
 Each built-in data type comes with a range of supported validators out of the box.
 In this example `someString` must be defined, e.g. can't be optional or empty,
@@ -160,36 +213,6 @@ const someString = z.string({
   .includes('test', {
     message: `Must contain 'test'`
   });
-```
-
----
-layout: image-right
-image: https://source.unsplash.com/collection/94734566/1920x1080
----
-
-### Example - String validation with custom validators
-
-Custom validation is sometimes needed to test specific logic, that can't be handled by built-in validators.
-<!-- Zod uses refine for custom validation logic. -->
-
-```ts
-const someString = z.string({
-    invalid_type_error: 'Must be a string',
-    required_error: 'Is required',
-  })
-  .trim()
-  .min(1, `Shouldn't be empty`)
-  .transform((value: string): string =>
-    value.replace(/\s/g, ''))
-  .refine(
-    (value: string): boolean => {
-      return split('').reverse().join('')
-        !== value;
-    },
-    {
-      message: `Must not be a palindrome`,
-    },
-  );
 ```
 
 ---
