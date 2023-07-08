@@ -6,50 +6,61 @@ image: https://source.unsplash.com/collection/94734566/1920x1080
 ## Validation
 
 ---
-layout: two-cols
+layout: two-cols-header
+layoutClass: gap-4
 image: https://source.unsplash.com/collection/94734566/1920x1080
 ---
 
-## Intro examples
+## Validating single values
+
+::left::
 
 Schema
+
 ```ts
+import z from 'zod';
+
 const someString = z.string({
-    invalid_type_error: 'Must be a string',
-    required_error: 'Is required',
-  })
-  .trim()
-  .min(1, `Shouldn't be empty`)
-  .max(9, `Shouldn't be larger than 9 characters`)
-  .includes('test', {
-    message: `Must contain 'test'`
-  });
+  invalid_type_error: 'Must be a string',
+  required_error: 'Is required',
+})
+.trim()
+.min(1, `Shouldn't be empty`)
+.max(9, `Shouldn't be larger than 9 characters`)
+.includes('test', {
+  position: 1,
+  message: `Must contain 'test' after first character`
+})
+
+console.log(someString.safeParse('surreptitious'));
 ```
 
 ::right::
 
-Validation result for "surreptitious"
-
 ```json
-[
-  {
-    "code": "too_big",
-    "maximum": 9,
-    "type": "string",
-    "inclusive": true,
-    "exact": false,
-    "message": "Shouldn't be larger than 9 characters",
-    "path": []
-  },
-  {
-    "code": "invalid_string",
-    "validation": {
-      "includes": "test"
-    },
-    "message": "Must contain 'test'",
-    "path": []
+{
+  "success": false,
+  "error": {
+    "issues": [
+      {
+        "code": "too_big",
+        "maximum": 9,
+        "type": "string",
+        "inclusive": true,
+        "exact": false,
+        "message": "Shouldn't be larger than 9 characters",
+      },
+      {
+        "code": "invalid_string",
+        "validation": {
+          "includes": "test",
+          "position": 1
+        },
+        "message": "Must contain 'test' after first character",
+      }
+    ],
   }
-]
+}
 ```
 
 ---
