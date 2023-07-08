@@ -7,11 +7,11 @@ image: https://source.unsplash.com/collection/94734566/1920x1080
 
 ---
 layout: two-cols-header
-layoutClass: gap-4
+layoutClass: gap-4 grid-cols-2 auto-rows-min
 image: https://source.unsplash.com/collection/94734566/1920x1080
 ---
 
-## Validating single values
+### Validate single field with single type
 
 ::left::
 
@@ -37,6 +37,8 @@ console.log(someString.safeParse('surreptitious'));
 
 ::right::
 
+Output
+
 ```json
 {
   "success": false,
@@ -48,7 +50,8 @@ console.log(someString.safeParse('surreptitious'));
         "type": "string",
         "inclusive": true,
         "exact": false,
-        "message": "Shouldn't be larger than 9 characters",
+        "message": "Shouldn't be larger than
+          9 characters",
       },
       {
         "code": "invalid_string",
@@ -56,9 +59,63 @@ console.log(someString.safeParse('surreptitious'));
           "includes": "test",
           "position": 1
         },
-        "message": "Must contain 'test' after first character",
+        "message": "Must contain 'test' after
+          first character",
       }
     ],
+  }
+}
+```
+
+---
+layout: two-cols-header
+layoutClass: gap-4 grid-cols-2 auto-rows-min
+image: https://source.unsplash.com/collection/94734566/1920x1080
+---
+
+### Validate single field with multiple types
+
+::left::
+
+Schema
+
+```ts
+import z from 'zod';
+
+const someNumberOrArray = z.union([
+  z.number({
+    invalid_type_error: 'Must be a number',
+    required_error: 'Is required',
+  }).positive('Must be positive'),
+  z.array(
+    z.number().positive('Must be positive')
+  ).nonempty('Must not be empty'),
+]);
+
+console.log(someNumberOrArray.safeParse([1, -1]));
+
+```
+
+::right::
+
+Output
+
+```json
+{
+  "success": false,
+  "error": {
+    "issues": [
+      {
+        "code": "too_small",
+        "minimum": 1,
+        "type": "array",
+        "inclusive": true,
+        "exact": false,
+        "message": "Must not be empty",
+        "path": []
+      }
+    ],
+    "name": "ZodError"
   }
 }
 ```
@@ -68,18 +125,7 @@ layout: image-right
 image: https://source.unsplash.com/collection/94734566/1920x1080
 ---
 
-## Intro
-
-<!-- Each validator supports a custom error message -->
-
-
-
----
-layout: image-right
-image: https://source.unsplash.com/collection/94734566/1920x1080
----
-
-## Supported types - The usual ones
+### Supported types - The usual ones
 
 * string (`email`, `url`, `uuid`, `regex`, `includes`, `startsWith`, `endsWith`, `dateString` etc.)
 * number (`integer`, `float`, `positive`, `negative`, `multipleOf` etc.)
@@ -121,7 +167,7 @@ layout: image-right
 image: https://source.unsplash.com/collection/94734566/1920x1080
 ---
 
-## Example - String validation with custom validators
+### Example - String validation with custom validators
 
 Custom validation is sometimes needed to test specific logic, that can't be handled by built-in validators.
 <!-- Zod uses refine for custom validation logic. -->
@@ -151,7 +197,7 @@ layout: image-right
 image: https://source.unsplash.com/collection/94734566/1920x1080
 ---
 
-## Example - Validation of related fields
+### Example - Validation of related fields
 
 ```ts
 // todo
@@ -174,7 +220,7 @@ layout: image-right
 image: https://source.unsplash.com/collection/94734566/1920x1080
 ---
 
-## Example - Discriminated union types
+### Example - Discriminated union types
 
 ```ts
 // todo
@@ -185,7 +231,7 @@ layout: image-right
 image: https://source.unsplash.com/collection/94734566/1920x1080
 ---
 
-## Common pain points
+### Common pain points
 
 * Using `refine` on a schema wraps it in a `ZodEffects` class making it difficult to access `schema.shape` to retrieve the schema values
 * `refine` on a schema is not executed, when the initial schema object is initialized with invalid values
