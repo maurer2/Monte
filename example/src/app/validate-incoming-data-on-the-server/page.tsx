@@ -8,7 +8,7 @@ import BackButton from '@/components/BackButton';
 
 import type { Schema } from '../../schema/schema.types';
 import { daysOfWorkWeek } from '../../schema/schema.constants';
-import type { SuccessResponse, ErrorResponse, ResponseTypes } from '../api/set-data/types';
+import type { ResponseTypes } from '../api/set-data/types';
 
 const setApiData = async <T,>(url: string, data: T) => {
   const response = await fetch(url, {
@@ -80,7 +80,7 @@ export default function ValidateIncomingDataServer() {
 
   return (
     <main className="min-h-screen p-24 font-sans">
-      <div className="grid grid-cols-2  w-full max-w-5xl">
+      <div className="grid grid-cols-2 w-full max-w-5xl">
         <h1 className="mb-4 col-span-full">Validate incoming data on the server</h1>
 
         <section>

@@ -7,4 +7,4 @@ export type ResponseTypes = z.infer<typeof responseSchema>;
 export type SuccessResponse = Extract<ResponseTypes, { status: 'success' }>;
 export type ErrorResponse = Extract<ResponseTypes, { status: 'error' }>;
 
-type Test = Extract<ResponseTypes, { status: 'meouw' }>; // no error, but returns never
+// type Test = Extract<ResponseTypes, { status: 'meouw' }>; // no error, but returns never
