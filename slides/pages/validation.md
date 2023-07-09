@@ -6,9 +6,32 @@ image: https://source.unsplash.com/collection/94734566/1920x1080
 ## Validation
 
 ---
+layout: image-right
+image: https://source.unsplash.com/collection/94734566/1920x1080
+hideInToc: true
+---
+
+### Built-in validators
+
+Zod comes with a range of built-in validators. Each validator supports a custom error message,
+that is displayed alongside other error data.
+
+Most commonly used validators are:
+
+* string (`email`, `url`, `uuid`, `regex`, `startsWith`, `endsWith` etc.)
+* number (`integer`, `float`, `positive`, `negative`, `multipleOf` etc.)
+* array (`min`, `max`, `length`, `nonempty`)
+* object
+* boolean
+* undefined/null
+* enum
+* date (`min`, `max`)
+
+---
 layout: two-cols-header
 layoutClass: gap-4 grid-cols-2 auto-rows-min
 image: https://source.unsplash.com/collection/94734566/1920x1080
+hideInToc: true
 ---
 
 ### Validate single fields with single types
@@ -71,6 +94,7 @@ Output
 layout: two-cols-header
 layoutClass: gap-4 grid-cols-2 auto-rows-min
 image: https://source.unsplash.com/collection/94734566/1920x1080
+hideInToc: true
 ---
 
 ### Validate single fields with custom validation logic
@@ -124,6 +148,7 @@ Output
 layout: two-cols-header
 layoutClass: gap-4 grid-cols-2 auto-rows-min
 image: https://source.unsplash.com/collection/94734566/1920x1080
+hideInToc: true
 ---
 
 ### Validate single fields with multiple types
@@ -159,15 +184,14 @@ Output
     "issues": [
       {
         "code": "too_small",
-        "minimum": 1,
-        "type": "array",
-        "inclusive": true,
+        "minimum": 0,
+        "type": "number",
+        "inclusive": false,
         "exact": false,
-        "message": "Must not be empty",
-        "path": []
+        "message": "Must be positive",
+        "path": [1]
       }
     ],
-    "name": "ZodError"
   }
 }
 ```
@@ -176,6 +200,7 @@ Output
 layout: two-cols-header
 layoutClass: gap-4 grid-cols-2 auto-rows-min
 image: https://source.unsplash.com/collection/94734566/1920x1080
+hideInToc: true
 ---
 
 ### Validate related fields with custom validation logic
@@ -238,60 +263,7 @@ console.log(someComplexDataType.safeParse({
 ---
 layout: image-right
 image: https://source.unsplash.com/collection/94734566/1920x1080
----
-
-### Supported types - The usual ones
-
-* string (`email`, `url`, `uuid`, `regex`, `includes`, `startsWith`, `endsWith`, `dateString` etc.)
-* number (`integer`, `float`, `positive`, `negative`, `multipleOf` etc.)
-* boolean
-* object
-* array (`min`, `max`, `length`, `nonempty`)
-* undefined
-* null
-* date (`min`, `max`)
-* bigInt
-
----
-layout: image-right
-image: https://source.unsplash.com/collection/94734566/1920x1080
----
-
-### Example - String validation with default validators
-
-Each built-in data type comes with a range of supported validators out of the box.
-In this example `someString` must be defined, e.g. can't be optional or empty,
-must be of type string with a length of 1 to 10.
-Additionally `someString` must not contain the word "test".
-
-```ts
-const someString = z.string({
-    invalid_type_error: 'Must be a string',
-    required_error: 'Is required',
-  })
-  .trim()
-  .min(1, `Shouldn't be empty`)
-  .max(9, `Shouldn't be larger than 9 characters`)
-  .includes('test', {
-    message: `Must contain 'test'`
-  });
-```
-
----
-layout: image-right
-image: https://source.unsplash.com/collection/94734566/1920x1080
----
-
-## Supported types - The unusual ones
-
-* Enums
-* Union types
-* Discriminated union types
-* Tuples
-
----
-layout: image-right
-image: https://source.unsplash.com/collection/94734566/1920x1080
+hideInToc: true
 ---
 
 ### Example - Discriminated union types
@@ -303,6 +275,7 @@ image: https://source.unsplash.com/collection/94734566/1920x1080
 ---
 layout: image-right
 image: https://source.unsplash.com/collection/94734566/1920x1080
+hideInToc: true
 ---
 
 ### Common pain points
