@@ -39,3 +39,7 @@ src: ./pages/features.md
 ---
 src: ./pages/validation.md
 ---
+
+---
+src: ./pages/zod-and-typescript.md
+---
