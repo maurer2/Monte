@@ -261,15 +261,55 @@ console.log(someComplexDataType.safeParse({
 ```
 
 ---
-layout: image-right
+layout: two-cols-header
+layoutClass: gap-4 grid-cols-2 auto-rows-min
 image: https://source.unsplash.com/collection/94734566/1920x1080
 hideInToc: true
 ---
 
-### Example - Discriminated union types
+### Validate multiple object shapes with common field, e.g. discriminated unions
+
+::left::
 
 ```ts
-// todo
+const someSuccessOrFailObject = z.discriminatedUnion('status', [
+  z.object({
+    status: z.literal('success'),
+    data: z.object({
+      message: z.string().optional(),
+    })
+  }),
+  z.object({
+    status: z.literal('fail'),
+    data: z.object({
+      errorCode: z.union([
+        z.number().int().nonnegative(),
+        z.string().nonempty(),
+      ]),
+      message: z.string().nonempty(),
+    })
+  }),
+]);
+console.log(someSuccessOrFailObject.safeParse({
+  status: 'success',
+  data: {
+    message: 'OK',
+  }
+}));
+```
+
+::right::
+
+```json
+{
+  "success": true,
+  "data": {
+    "status": "success",
+    "data": {
+      "message": "OK"
+    }
+  }
+}
 ```
 
 ---
