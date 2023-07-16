@@ -68,17 +68,23 @@ type SomeComplexDataType = {
   numberOfEntries: number;
   entries: string[];
   urls?: Record<string, boolean> | undefined;
-  role: "User" | "Editor" | "Admin";
+  role: "User" | "Admin";
   timestamp: Date;
 }
 ```
 
-<!-- ---
+---
+layout: image-right
+image: https://source.unsplash.com/collection/94734566/1920x1080
+hideInToc: true
+---
 
-# TypeScript vs Zod
+### When to use what
 
-* TypeScript handles static data, e.g. data that is known at compile time, well
-* Dynamic data, e.g. data that is dynamic and only known at run time, is handled well by Zod
-* TypeScript can also be used to model dynamic data, but there might be inconsistencies between expected types and actual data, that can't be detected at runtime, since TypeScript types are removed during compilation (type erasure)
-* Zod can detected invalid types at runtime
-* Zod can create TypeScript from a schema to simplify working with the rest of the TypeScript ecosystem, but schema data are lost in the process for example Zod's `int` type becomes `number` in TypeScript etc. -->
+- Schema validation ideally happens whenever dynamic data is ingested, for example when:
+  - Loading data via Ajax
+  - Reading FormData from web forms
+  - Restoring data from local or session storage
+  <!-- - Receive BroadcastChannel data -->
+- Once the inbound data has been verified to meet the schema, TypeScript types/interfaces can safely be used on dynamic data (especially when those types are generated from Zod schemas)
+- Static data, e.g. data that is imported at build time, doesn't need to be validated, unless additional validation logic should be applied
