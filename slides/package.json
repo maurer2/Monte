@@ -12,7 +12,8 @@
     "snippets:single-value-validation-custom-validator": "ts-node snippets/single-value-validation-custom-validator/single-value-validation-custom-validator.ts",
     "snippets:single-value-validation-union": "ts-node snippets/single-value-validation-union/single-value-validation-union.ts",
     "snippets:related-field-validation": "ts-node snippets/related-field-validation/related-field-validation.ts",
-    "snippets:discriminated-unions": "ts-node snippets/discriminated-unions/discriminated-unions.ts"
+    "snippets:discriminated-unions": "ts-node snippets/discriminated-unions/discriminated-unions.ts",
+    "snippets:undefined-vs-optional": "ts-node snippets/undefined-vs-optional/undefined-vs-optional.ts"
   },
   "dependencies": {
     "@slidev/cli": "^0.42.5",
