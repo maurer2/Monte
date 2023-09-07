@@ -320,5 +320,6 @@ hideInToc: true
 
 ### Common pain points
 
-* Using `refine` on a schema wraps it in a `ZodEffects` class making it difficult to access `schema.shape` to retrieve the schema values
-* `refine` on a schema is not executed, when the initial schema object is initialized with invalid values
+* Using `refine` on a schema wraps it in a `ZodEffects` type, making it difficult to access `shape` to retrieve the schema values ([link to issue](https://github.com/colinhacks/zod/issues/2474))
+* `refine` on a schema is not executed, when the initial schema object is initialized with invalid values ([link to issue](https://github.com/colinhacks/zod/issues/2524))
+* It is currently not possible to define a non-optional object key that can be `undefined`, without using a workaround ([link to issue](https://github.com/colinhacks/zod/issues/2464))
