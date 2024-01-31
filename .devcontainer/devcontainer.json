@@ -3,7 +3,7 @@
 {
   "name": "Node.js & TypeScript",
   // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-  "image": "mcr.microsoft.com/devcontainers/typescript-node:0-18",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:0-20",
 
   // Features to add to the dev container. More info: https://containers.dev/features.
   // "features": {},
@@ -88,8 +88,10 @@
         "wix.vscode-import-cost",
         "wmaurer.change-case",
         "yatki.vscode-surround",
-        // "Orta.vscode-jest" // jest
-        "ZixuanChen.vitest-explorer" // vitest
+        // "Orta.vscode-jest", // jest
+        "ZixuanChen.vitest-explorer", // vitest
+        "yoavbls.pretty-ts-errors",
+        "mikestead.dotenv"
       ]
     }
   }

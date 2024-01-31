@@ -43,3 +43,8 @@ src: ./pages/validation.md
 ---
 src: ./pages/zod-and-typescript.md
 ---
+
+---
+hideInToc: true
+layout: end
+---
