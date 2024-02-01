@@ -136,7 +136,7 @@ function testFunction(
     throw new Error(error?.message);
   }
 }
-````
+```
 
 ---
 layout: image-right
@@ -170,4 +170,4 @@ function testFunction(
   // parseResult.data.testNumber is "number" now
   ...
 }
-````
+```
