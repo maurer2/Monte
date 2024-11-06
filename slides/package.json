@@ -14,7 +14,8 @@
     "snippets:related-field-validation": "ts-node snippets/related-field-validation/related-field-validation.ts",
     "snippets:discriminated-unions": "ts-node snippets/discriminated-unions/discriminated-unions.ts",
     "snippets:undefined-vs-optional": "ts-node snippets/undefined-vs-optional/undefined-vs-optional.ts",
-    "snippets:key-value-validation": "ts-node snippets/key-value-validation/key-value-validation.ts"
+    "snippets:key-value-validation": "ts-node snippets/key-value-validation/key-value-validation.ts",
+    "snippets:z-function": "node --experimental-strip-types './snippets/z-function/z-function.ts'"
   },
   "dependencies": {
     "@slidev/cli": "^0.42.11",
